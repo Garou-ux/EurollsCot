@@ -13,9 +13,27 @@
         <!-- Fonts -->
         <link rel="preconnect" href="https://fonts.bunny.net">
         <link href="https://fonts.bunny.net/css?family=figtree:400,500,600&display=swap" rel="stylesheet" />
-
+        <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
         <!-- Scripts -->
         @vite(['resources/css/app.css', 'resources/js/app.js'])
+
+        <input type="hidden" value="{{ csrf_token() }}"  id="ajaxtokengeneral">
+        <script type="text/javascript" src="{{ asset('js/app.js') }}"></script>
+        <style>
+            /* Agrega el efecto de transición al modal */
+        .animate-fade-in {
+            animation: fadeIn 0.3s ease-in-out;
+        }
+
+        @keyframes fadeIn {
+            0% {
+                opacity: 0;
+            }
+            100% {
+                opacity: 1;
+            }
+        }
+    </style>
     </head>
     <body class="font-sans antialiased">
         <div class="min-h-screen bg-gray-100">

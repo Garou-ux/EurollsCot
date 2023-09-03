@@ -6,18 +6,20 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\SoftDeletes;
 
-class Producto extends Model
+
+class CotizacionDetail extends Model
 {
     use HasFactory, SoftDeletes;
 
+    protected $table = 'cotizacion_details';
+
     protected $fillable = [
         'id',
-        'clave',
-        'nombre',
-        'descripcion',
+        'cotizacion_id',
+        'producto_id',
+        'cantidad',
         'precio',
         'deleted_by',
-        'image_path',
         'created_at',
         'updated_at',
         'deleted_at'

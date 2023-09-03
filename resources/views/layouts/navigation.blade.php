@@ -18,7 +18,7 @@
                     <x-nav-link :href="route('catalogos.list')">
                         {{ __('Catalogos') }}
                     </x-nav-link>
-                    <x-nav-link :href="route('dashboard')">
+                    <x-nav-link :href="route('cotizaciones.list')">
                         {{ __('Cotizaciones') }}
                     </x-nav-link>
                 </div>
