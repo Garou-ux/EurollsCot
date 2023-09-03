@@ -74,4 +74,9 @@ class ProductsController extends Controller
         }
     }
 
+    public function getproductsforcotizacion(){
+        $products = Producto::all();
+        return $products;
+    }
+
 }

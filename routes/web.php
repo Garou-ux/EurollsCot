@@ -5,6 +5,7 @@ use App\Http\Controllers\CatalogosController;
 use App\Http\Controllers\UserController;
 use App\Http\Controllers\ProductsController;
 use App\Http\Controllers\CotizacionesController;
+use App\Http\Controllers\ClientesController;
 
 use Illuminate\Support\Facades\Route;
 
@@ -60,8 +61,21 @@ Route::get('storage/{filename}', function ($filename) {
 Route::get('products', [ProductsController::class, 'index'])->middleware(['auth', 'verified'])->name('products.index');
 Route::post('products', [ProductsController::class, 'store'])->middleware(['auth', 'verified'])->name('products.store');
 Route::post('products/destroy', [ProductsController::class, 'destroy'])->middleware(['auth', 'verified'])->name('products.destroy');
+Route::get('products/getproductsforcotizacion', [ProductsController::class, 'getproductsforcotizacion'])->middleware(['auth', 'verified'])->name('products.cotizacion');
 
 #cotizaciones
 Route::get('/cotizaciones',[CotizacionesController::class, 'index'])->middleware(['auth', 'verified'])->name('cotizaciones.list');
+Route::get('/cotizaciones/create', [CotizacionesController::class, 'create'])->middleware(['auth', 'verified'])->name('cotizaciones.create');
+Route::post('/cotizaciones/store', [CotizacionesController::class, 'store'])->middleware(['auth', 'verified'])->name('cotizaciones.store');
+Route::post('/cotizaciones/destroy', [CotizacionesController::class, 'destroy'])->middleware(['auth', 'verified'])->name('cotizaciones.destroy');
+
+
+#clientes
+Route::get('clientes', [ClientesController::class, 'index'])->middleware(['auth', 'verified'])->name('clientes.index');
+Route::post('clientes', [ClientesController::class, 'store'])->middleware(['auth', 'verified'])->name('clientes.store');
+Route::post('clientes/destroy', [ClientesController::class, 'destroy'])->middleware(['auth', 'verified'])->name('clientes.destroy');
+Route::get('clientes/getclientesforcotizacion', [ClientesController::class, 'getclientesforcotizacion'])->middleware(['auth', 'verified'])->name('clientes.cotizacion');
+
+
 
 require __DIR__.'/auth.php';

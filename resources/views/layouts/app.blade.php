@@ -19,6 +19,9 @@
 
         <input type="hidden" value="{{ csrf_token() }}"  id="ajaxtokengeneral">
         <script type="text/javascript" src="{{ asset('js/app.js') }}"></script>
+        {{-- <link href="https://cdn.jsdelivr.net/npm/gridjs/dist/theme/mermaid.min.css" rel="stylesheet" />
+        <script src="https://cdn.jsdelivr.net/npm/gridjs/dist/gridjs.umd.js"></script> --}}
+
         <style>
             /* Agrega el efecto de transición al modal */
         .animate-fade-in {

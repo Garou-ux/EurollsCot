@@ -6,20 +6,20 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\SoftDeletes;
 
-
-class CotizacionDetail extends Model
+class Cliente extends Model
 {
     use HasFactory, SoftDeletes;
 
-    protected $table = 'cotizacion_details';
+    protected $table = 'clientes';
 
     protected $fillable = [
         'id',
-        'cotizacion_id',
-        'producto_id',
-        'cantidad',
-        'precio',
-        'importe',
+        'nombre',
+        'direccion',
+        'codigo_postal',
+        'created_by',
+        'image_path',
+        'correo',
         'deleted_by',
         'created_at',
         'updated_at',
