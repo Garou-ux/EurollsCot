@@ -13,6 +13,8 @@ class CotizacionesController extends Controller
     public function index()
     {
         $cotizaciones = $this->getCotizacions();
+        $userId = auth()->id();
+        // dd($userId);
         return view('cotizaciones.index', compact('cotizaciones'));
     }
 
@@ -69,13 +71,14 @@ class CotizacionesController extends Controller
             ]);
               // Decodificar los detalles de la solicitud JSON
     $requestDetails = json_decode($request->details);
-
+    // dd($request->all(), $requestDetails);
     // Validar los detalles
     foreach ($requestDetails as $detail) {
         $validator = Validator::make((array) $detail, [
-            'producto' => 'required',
+            'producto_id' => 'required',
             'precio' => 'required|numeric|min:1',
             'cantidad' => 'required|numeric|min:1',
+            'importe' => 'required|numeric|min:1',
         ]);
 
         if ($validator->fails()) {
@@ -85,10 +88,10 @@ class CotizacionesController extends Controller
         // Crear el objeto CotizacionDetail si la validación pasa
         CotizacionDetail::create([
             "cotizacion_id" => $cotizacionHeader->id,
-            "producto_id" => $detail->producto,
+            "producto_id" => $detail->producto_id,
             "cantidad" => $detail->cantidad,
             "precio" => $detail->precio,
-            "importe" => $detail->cantidad * $detail->precio
+            "importe" => $detail->importe
         ]);
     }
 

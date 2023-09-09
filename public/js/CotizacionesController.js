@@ -1,5 +1,51 @@
 
 
+// import $ from 'jquery';
+
+
+// document.addEventListener("DOMContentLoaded", function () {
+//     const select = document.getElementById("miSelect");
+
+//     // Simulación de datos desde un JSON
+//     const jsonData = [
+//         { id: 1, text: "Opción 1" },
+//         { id: 2, text: "Opción 2" },
+//         { id: 3, text: "Opción 3" },
+//     ];
+
+//     // Llenar el select con opciones
+//     jsonData.forEach((item) => {
+//         const option = new Option(item.text, item.id);
+//         select.add(option);
+//     });
+
+//     // Inicializar Select2 en el elemento select
+//     $(select).select2({
+//         search: true
+//     });
+
+
+// });
+
+// // Crear el elemento select
+// const select = document.createElement('select');
+// select.id = 'miSelect';
+// select.classList.add('h-6', 'px-3', 'rounded');
+
+// // Agregar opciones al select
+// const opciones = ['Opción 1', 'Opción 2', 'Opción 3'];
+// opciones.forEach((opcion, index) => {
+//     const option = document.createElement('option');
+//     option.value = `opcion${index + 1}`;
+//     option.text = opcion;
+//     select.add(option);
+// });
+
+// // Agregar el select al documento
+// document.body.appendChild(select);
+
+
+
 appControl = appModule;
 
 const url_store_cotizacion = document.getElementById('url_store_cotizacion').value;
@@ -10,7 +56,8 @@ const searchInput = document.createElement('input');
 let rowsData = [];
 searchInput.setAttribute('type', 'text');
 searchInput.setAttribute('placeholder', 'Buscar Cliente');
-
+let cont = 0;
+let _tamaño = 0;
 const getProducts = async  () => {
     let response = await appControl.fetchData(url_get_products, {}, 'GET');
     return response;
@@ -79,14 +126,14 @@ document.addEventListener('DOMContentLoaded', async function() {
 
 
         agregarFilaButton.addEventListener('click', agregarFila);
-
         function agregarFila() {
             const fila = document.createElement('tr');
             fila.classList.add('border-b', 'border-slate-200');
-
+            cont += 1;
             const productoSelectTd = document.createElement('td');
             productoSelectTd.classList.add('py-2', 'pl-4', 'pr-3', 'text-sm', 'sm:pl-6', 'md:pl-0');
             const productoSelect = createSelect('producto', getProductosDisponibles());
+            productoSelect.id = cont;
             productoSelect.classList.add('w-full', 'px-2', 'py-1', 'border', 'border-gray-300', 'rounded', 'focus:outline-none', 'focus:ring', 'focus:ring-blue-500');
             productoSelectTd.appendChild(productoSelect);
 
@@ -140,6 +187,25 @@ document.addEventListener('DOMContentLoaded', async function() {
             productoSelect.addEventListener('change', () => actualizarTotal(row));
             cantidadInput.addEventListener('input', () => actualizarTotal(row));
             precioInput.addEventListener('input', () => actualizarTotal(row));
+            $(`#${cont}`).select2({
+                search: true
+            });
+            const elementos = document.querySelectorAll('.select2-container');
+
+            elementos.forEach(elemento => {
+                const rect = elemento.getBoundingClientRect();
+                // Obtiene el ancho exacto con decimales
+                 const anchoExacto = rect.width;
+                 console.log(anchoExacto);
+                 console.log(elemento, cont, _tamaño);
+                if(cont === 1){
+                    _tamaño = anchoExacto;
+                }
+                if ( cont > 1 ){
+                    console.log(`${_tamaño}px;`);
+                    elemento.style.width = `${_tamaño}px`;
+                }
+            });
             actualizarTotal();
         }
 

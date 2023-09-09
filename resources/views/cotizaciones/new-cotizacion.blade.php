@@ -15,7 +15,7 @@
                     <x-application-logo class="block h-9 w-auto fill-current text-gray-800 dark:text-gray-200" />
 
                  <p class="text-xl font-extrabold tracking-tight uppercase font-body">
-                 One Mfg Cotización
+                 One Mfg Cotización # 1
                  </p>
                 </div>
                </div>
@@ -32,7 +32,8 @@
     <input type="hidden" value="{{ route('clientes.cotizacion') }}" id="url_get_clients">
 
 
-    <script type="text/javascript" src="{{ asset('js/CotizacionesController.js') }}"></script>
+    {{-- <script type="text/javascript" src="{{ asset('js/CotizacionesController.js') }}"></script> --}}
+        <script type="text/javascript" src="{{ asset('js/CtrlCotizaciones.js') }}"></script>
 </x-app-layout>
 
 

@@ -6,6 +6,7 @@ use App\Http\Controllers\UserController;
 use App\Http\Controllers\ProductsController;
 use App\Http\Controllers\CotizacionesController;
 use App\Http\Controllers\ClientesController;
+use App\Http\Controllers\OpcionController;
 
 use Illuminate\Support\Facades\Route;
 
@@ -27,6 +28,10 @@ use Illuminate\Support\Facades\Route;
 Route::get('/', function () {
     return view('dashboard');
 })->middleware(['auth', 'verified'])->name('dashboard');
+
+Route::get('/dashboard', function () {
+    return view('dashboard');
+})->middleware(['auth', 'verified']);
 
 Route::middleware('auth')->group(function () {
     Route::get('/profile', [ProfileController::class, 'edit'])->middleware(['auth', 'verified'])->name('profile.edit');
@@ -68,6 +73,7 @@ Route::get('/cotizaciones',[CotizacionesController::class, 'index'])->middleware
 Route::get('/cotizaciones/create', [CotizacionesController::class, 'create'])->middleware(['auth', 'verified'])->name('cotizaciones.create');
 Route::post('/cotizaciones/store', [CotizacionesController::class, 'store'])->middleware(['auth', 'verified'])->name('cotizaciones.store');
 Route::post('/cotizaciones/destroy', [CotizacionesController::class, 'destroy'])->middleware(['auth', 'verified'])->name('cotizaciones.destroy');
+Route::post('/cotizaciones/edit', [CotizacionesController::class, 'edit'])->middleware(['auth', 'verified'])->name('cotizaciones.edit');
 
 
 #clientes
@@ -76,6 +82,8 @@ Route::post('clientes', [ClientesController::class, 'store'])->middleware(['auth
 Route::post('clientes/destroy', [ClientesController::class, 'destroy'])->middleware(['auth', 'verified'])->name('clientes.destroy');
 Route::get('clientes/getclientesforcotizacion', [ClientesController::class, 'getclientesforcotizacion'])->middleware(['auth', 'verified'])->name('clientes.cotizacion');
 
+
+Route::post('/guardar-opcion', [OpcionController::class, 'guardarOpcion']);
 
 
 require __DIR__.'/auth.php';

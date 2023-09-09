@@ -20,6 +20,9 @@
             <th class="px-6 py-3 bg-gray-50 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
                 {{ __('PDF') }}
             </th>
+            <th class="px-6 py-3 bg-gray-50 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                {{ __('Enviar') }}
+            </th>
         </tr>
     </thead>
     <tbody class="bg-white divide-y divide-gray-200">
@@ -55,6 +58,9 @@
             </td>
             <td class="px-6 py-4 whitespace-no-wrap">
                 <a href="#" class="inline-flex items-center px-4 py-2 bg-red-600 border border-transparent rounded-md font-semibold text-xs text-white uppercase tracking-widest hover:bg-red-500 active:bg-red-700 focus:outline-none focus:ring-2 focus:ring-red-500 focus:ring-offset-2 dark:focus:ring-offset-gray-800 transition ease-in-out duration-150">Ver PDF</a>
+            </td>
+            <td class="px-6 py-4 whitespace-no-wrap">
+                <a href="#" class="inline-flex items-center px-4 py-2 bg-red-600 border border-transparent rounded-md font-semibold text-xs text-white uppercase tracking-widest hover:bg-red-500 active:bg-red-700 focus:outline-none focus:ring-2 focus:ring-red-500 focus:ring-offset-2 dark:focus:ring-offset-gray-800 transition ease-in-out duration-150">Enviar PDF</a>
             </td>
         </tr>
         @endforeach

@@ -75,7 +75,10 @@ class ProductsController extends Controller
     }
 
     public function getproductsforcotizacion(){
-        $products = Producto::all();
+        $products = Producto::select([
+            "id as producto_id",
+            "clave"
+        ])->get();
         return $products;
     }
 
