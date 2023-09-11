@@ -44,10 +44,42 @@
        <input type="text" maxlength="30" name="atencion" id="atencion" required>
       </div>
       <div class="text-sm font-light text-slate-500">
-       <p class="text-sm font-normal text-slate-700">Terminos</p>
-       <p>Validity of quotation .- 15 days</p>
+       {{-- <p class="text-sm font-normal text-slate-700">Terminos</p> --}}
+       {{-- <p>Validity of quotation .- 15 days</p>
        <p>Payment 30 days ... - Currency MXP</p>
-       <p>*Purchase order delay may affect delivery time*</p>
+       <p>*Purchase order delay may affect delivery time*</p> --}}
+
+        <label
+            for="terminos"
+            class="block mb-2
+                   text-sm
+                   font-medium
+                   text-gray-900
+                   "
+        >
+        Terminos
+       </label>
+       <textarea
+           maxlength="450"
+           id="terminos"
+           rows="4"
+           class="
+               block
+               p-2.5
+               w-full
+               text-sm
+               text-gray-900
+               bg-gray-50
+               rounded-lg
+               border
+               border-gray-300
+               focus:ring-blue-500
+               focus:border-blue-500
+               dark:placeholder-gray-400
+               dark:focus:ring-blue-500
+               dark:focus:border-blue-500"
+            placeholder="Escribe los terminos aqui..."></textarea>
+
       </div>
      </div>
     </div>

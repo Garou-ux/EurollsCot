@@ -25,13 +25,11 @@
 
         <link rel="stylesheet" href="{{ asset('css/jsgrid.min.css') }}">
         <link rel="stylesheet" href="{{ asset('css/jsgrid-theme.min.css') }}">
-        {{-- <link href="https://cdn.jsdelivr.net/npm/gridjs/dist/theme/mermaid.min.css" rel="stylesheet" />
-        <script src="https://cdn.jsdelivr.net/npm/gridjs/dist/gridjs.umd.js"></script> --}}
-        {{-- <script src="../../public/js/jsgrid.js"></script> --}}
         <script type="text/javascript" src="{{ asset('js/jsgrid.js') }}"></script>
-
-        {{-- <script src="../../public/js/jsgrid.min.js"></script> --}}
-        {{-- <script type="text/javascript" src="{{ asset('js/jsgrid.min.js') }}"></script> --}}
+        <link rel="stylesheet" type="text/css" href="https://printjs-4de6.kxcdn.com/print.min.css">
+        <script src="https://printjs-4de6.kxcdn.com/print.min.js"></script>
+        <link href="https://unpkg.com/gridjs/dist/theme/mermaid.min.css" rel="stylesheet" />
+        <script src="https://unpkg.com/gridjs/dist/gridjs.umd.js"></script>
         <style>
             /* Agrega el efecto de transición al modal */
         .animate-fade-in {
@@ -67,9 +65,9 @@
             </main>
             <footer class="text-center p-5 text-gray-500 font-bold uppercase">
                 One Mfg - Todos los derechos reservados {{ now()->format('Y') }}
-                @if(session('opcion_seleccionada'))
+                {{-- @if(session('opcion_seleccionada'))
                     <p>La opción seleccionada es: {{ session('opcion_seleccionada') }}</p>
-                @endif
+                @endif --}}
 
             </footer>
         </div>

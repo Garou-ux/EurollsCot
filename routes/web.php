@@ -73,7 +73,10 @@ Route::get('/cotizaciones',[CotizacionesController::class, 'index'])->middleware
 Route::get('/cotizaciones/create', [CotizacionesController::class, 'create'])->middleware(['auth', 'verified'])->name('cotizaciones.create');
 Route::post('/cotizaciones/store', [CotizacionesController::class, 'store'])->middleware(['auth', 'verified'])->name('cotizaciones.store');
 Route::post('/cotizaciones/destroy', [CotizacionesController::class, 'destroy'])->middleware(['auth', 'verified'])->name('cotizaciones.destroy');
-Route::post('/cotizaciones/edit', [CotizacionesController::class, 'edit'])->middleware(['auth', 'verified'])->name('cotizaciones.edit');
+// Route::post('/cotizaciones/edit', [CotizacionesController::class, 'edit'])->middleware(['auth', 'verified'])->name('cotizaciones.edit');
+Route::get('/cotizaciones/{cotizacion_id}/edit', [CotizacionesController::class, 'indexEdit'])->middleware(['auth', 'verified'])->name('cotizaciones.edit');
+Route::post('/cotizaciones/getCotizacionDetails', [CotizacionesController::class, 'getCotizacionDetails'])->middleware(['auth', 'verified'])->name('cotizaciones.details');
+Route::post('/cotizaciones/update', [CotizacionesController::class, 'update'])->middleware(['auth', 'verified'])->name('cotizaciones.update');
 
 
 #clientes

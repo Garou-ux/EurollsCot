@@ -19,6 +19,8 @@ class Cotizacion extends Model
         'company_id',
         'status_id',
         'deleted_by',
+        'atencion',
+        'terminos',
         'created_at',
         'updated_at',
         'deleted_at'

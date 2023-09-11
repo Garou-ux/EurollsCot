@@ -47,9 +47,9 @@
 
                     <!-- Menú desplegable (agregado con JavaScript) -->
                     <ul id="menu" class="hidden absolute z-10 mt-2 space-y-2 bg-white border border-gray-300 rounded-lg shadow-lg bottom-full">
-                        {{-- <li>
-                            <a href="#" class="block px-4 py-2 text-gray-700 hover:bg-gray-100">Editar</a>
-                        </li> --}}
+                        <li>
+                            <a href="{{ route('cotizaciones.edit', ['cotizacion_id' => $cotizacion->cotizacion_id]) }}"  class="block px-4 py-2 text-blue-600 hover:bg-gray-100">Editar</a>
+                        </li>
                         <li>
                             <a href="#" onclick="confirmDeleteCotizacion({{$cotizacion->cotizacion_id}})"  class="block px-4 py-2 text-red-600 hover:bg-gray-100">Eliminar</a>
                         </li>

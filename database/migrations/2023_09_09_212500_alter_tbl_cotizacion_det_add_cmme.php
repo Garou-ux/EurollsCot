@@ -14,8 +14,8 @@ return new class extends Migration
     public function up()
     {
         //
-        Schema::table('cotizacion', function (Blueprint $table) {
-            $table->string('terminos', 50)->nullable()->after('atencion');
+        Schema::table('cotizacion_details', function (Blueprint $table) {
+            $table->string('comentario', 150)->nullable()->after('deleted_by');
         });
     }
 

@@ -1,6 +1,4 @@
 
-console.log('aaa');
-
 appControl = appModule;
 
 const url_store_cotizacion = document.getElementById('url_store_cotizacion').value;
@@ -50,9 +48,9 @@ const loadGrid = async () => {
                         cantidad: item.cantidad,
                         precio: parseFloat(item.precio),
                         importe: item.importe,
-                        comentarios: item.comentarios
+                        comentario: item.comentarios
                     });
-                    actualizarTotal();
+                    actualizarTotal(productos);
                 }
 
             },
@@ -60,35 +58,39 @@ const loadGrid = async () => {
             deleteItem: function(item){
                 let productIndex = $.inArray(item, productos);
                 productos.splice(productIndex, 1);
-                actualizarTotal();
+                actualizarTotal(productos);
             },
         },
             onItemUpdating: function(args){
                 if(args.item.cantidad > 0){
                     let cantidadGrid = args.item.cantidad * parseFloat(args.item.precio);
                     args.item.importe = cantidadGrid;
-                    actualizarTotal();
+                    productos[args.itemIndex] = args.item;
+                    actualizarTotal(productos);
                 }
             },
             onItemInserting: function(args){
                 if( args.item.cantidad > 0 ){
                     let cantidadGrid = args.item.cantidad *  parseFloat(args.item.precio);
                     args.item.importe = cantidadGrid;
-                    actualizarTotal();
+                    productos[args.itemIndex] = args.item;
+                    actualizarTotal(productos);
                 }
             },
             onItemUpdated: function(args){
                 if( args.item.cantidad > 0){
                     let cantidadGrid = args.item.cantidad * parseFloat(args.item.precio);
                     args.item.importe = cantidadGrid;
-                    actualizarTotal();
+                    productos[args.itemIndex] = args.item;
+                    actualizarTotal(productos);
                 }
             },
             onItemEditing: function(args){
                 if( args.item.cantidad > 0 ){
                     let cantidadGrid = args.item.cantidad * parseFloat(args.item.precio);
                     args.item.importe = cantidadGrid;
-                    actualizarTotal();
+                    productos[args.itemIndex] = args.item;
+                    actualizarTotal(productos);
                 }
             },
             fields: [
@@ -252,6 +254,7 @@ guardarBtn.addEventListener('click', guardarDatos);
 
 async function guardarDatos() {
     const dataToSend = [];
+    appControl.mostrarLoading();
 
     // Recorre cada fila de la tabla y recopila los datos
     productos.forEach((rowData) => {
@@ -259,18 +262,21 @@ async function guardarDatos() {
         const cantidad = parseFloat(rowData.cantidad);
         const precio = parseFloat(rowData.precio);
         const importe = parseFloat(rowData.importe)
-        dataToSend.push({ producto_id, cantidad, precio, importe });
+        const comentario = rowData.comentario
+        dataToSend.push({ producto_id, cantidad, precio, importe, comentario });
     });
 
     let cliente_id = document.getElementById('selectPicker').value;
-
+    let terminos = document.getElementById('terminos').value;
     let atencion = document.getElementById('atencion').value;
     if(atencion === '' || atencion === undefined){
+        appControl.cerrarLoading();
         Swal.fire('', 'El campo de atencion no puede estar vacio', 'warning');
         return;
     }
 
     if ( dataToSend.length <= 0 ){
+        appControl.cerrarLoading();
         Swal.fire('', 'Debes de capturar al menos un producto', 'warning');
         return;
     }
@@ -279,14 +285,18 @@ async function guardarDatos() {
     let data = {
         _token: document.getElementById('ajaxtokengeneral').value,
         cliente_id: cliente_id,
-        atencion:atencion,
-        details: JSON.stringify(dataToSend)
+        atencion:   atencion,
+        terminos:   terminos,
+        details:    JSON.stringify(dataToSend)
     }
     let response = await appControl.fetchData(url_store_cotizacion, data , 'POST');
+    console.log(response);
     if( response.type === undefined){
-        for (const key in response.error) {
-            if (response.error.hasOwnProperty(key)) {
-                const messages = response.error[key];
+        appControl.cerrarLoading();
+        for (const key in response.errors) {
+            console.log(response);
+            if (response.errors.hasOwnProperty(key)) {
+                const messages = response.errors[key];
                 // Itera a través de los mensajes de error
                 for (const message of messages) {
                     Swal.fire(`Campo: ${key}`, `Mensaje de error: ${message}`, 'warning');
@@ -295,8 +305,25 @@ async function guardarDatos() {
         }
         return;
     }
+    appControl.cerrarLoading();
     Swal.fire('', response.message, response.type);
     if( response.type != 'error' && response.type != undefined ){
-        location.reload();
+        // location.reload();
     }
+        // Hacer una solicitud AJAX para generar el PDF y mostrarlo
+    $.get('/generate-pdf', function (data) {
+        mostrarPDF(data.pdf);
+    });
 }
+
+
+// Función para mostrar el PDF en SweetAlert2
+function mostrarPDF(pdfBase64) {
+    Swal.fire({
+        title: 'PDF Generado',
+        html: `<embed src="data:application/pdf;base64,${pdfBase64}" type="application/pdf" width="100%" height="600px" />`,
+        showConfirmButton: false, // No muestra el botón de confirmación
+    });
+}
+
+

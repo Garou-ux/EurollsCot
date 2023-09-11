@@ -21,6 +21,7 @@ class CotizacionDetail extends Model
         'precio',
         'importe',
         'deleted_by',
+        'comentario',
         'created_at',
         'updated_at',
         'deleted_at'

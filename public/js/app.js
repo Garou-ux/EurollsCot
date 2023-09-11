@@ -295,6 +295,23 @@ const initCloseModalTailwin = () => {
         return response.json();
         }
 
+        const  mostrarLoading = () => {
+            Swal.fire({
+                title: 'Cargando...',
+                html: 'Por favor, espere...',
+                showConfirmButton: false,
+                allowOutsideClick: false, // Evita cerrar haciendo clic fuera del cuadro
+                allowEscapeKey: false, // Evita cerrar con la tecla Esc
+                onBeforeOpen: () => {
+                    Swal.showLoading();
+                }
+            });
+        }
+
+        const cerrarLoading = () => {
+            Swal.close();
+        }
+
     return {
         messagesJson,
         clearSelectPicker,
@@ -329,6 +346,8 @@ const initCloseModalTailwin = () => {
         filterMonthTemplate,
         swal1Loading,
         initCloseModalTailwin,
-        fetchData
+        fetchData,
+        mostrarLoading,
+        cerrarLoading
      };
 })();
