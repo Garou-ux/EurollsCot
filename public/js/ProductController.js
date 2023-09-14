@@ -186,3 +186,7 @@
                 imageContainer.textContent = 'No se ha cargado ninguna imagen.';
             }
         }
+
+        document.addEventListener("DOMContentLoaded", ()=>{
+            new DataTable('#tblProducts');
+        })

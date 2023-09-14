@@ -14,12 +14,12 @@
             <br></br>
             <div class="div"></div>
         </div>
-        <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
-                @foreach ($products as $product)
-                    @include('catalogs.Products.card-product', [$product])
-                @endforeach
+        {{-- <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4"> --}}
+                {{-- @foreach ($products as $product) --}}
+                    @include('catalogs.Products.card-product')
+                {{-- @endforeach --}}
 
-        </div>
+        {{-- </div> --}}
     </div>
     @include('catalogs.Products.modal-product')
     <input type="hidden" value="{{ route('products.store') }}" id="url_store_product">

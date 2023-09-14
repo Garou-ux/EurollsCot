@@ -216,7 +216,7 @@ public function send_mail( $nombreEmpresa, $to )
 {
     $data["email"] = $to;
         $data["title"] = "De {$nombreEmpresa}";
-        $data["body"] = "This is Demo";
+        $data["body"] = "";
 
         $pdf = PDF::loadView('emails.mail', $data);
 
@@ -313,9 +313,6 @@ public function update ( CotizacionRequest $request ){
                     // array_push( 'producto_id' => $updatedProducts, $detail->producto_id);
                 }
             }
-            // DB::rollback();
-            // dd($updatedProducts, array_column($updatedProducts, 'producto_id'));
-            // Eliminar productos que existen en la base de datos pero no en el JSON actualizado
             CotizacionDetail::where('cotizacion_id', $cotizacion_id)
                 ->whereNotIn('id', array_column($updatedProducts, 'id'))
                 ->delete();

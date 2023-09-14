@@ -160,3 +160,9 @@ const saveEditClient = async ( element ) => {
             imageContainer.textContent = 'No se ha cargado ninguna imagen.';
         }
     }
+
+
+
+    document.addEventListener("DOMContentLoaded", ()=>{
+        new DataTable('#tblProducts');
+    })
