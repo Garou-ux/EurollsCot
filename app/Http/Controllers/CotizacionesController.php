@@ -25,7 +25,7 @@ class CotizacionesController extends Controller
     public function index()
     {
         try {
-            // $this->send_mail('ONE MFG', 'pahr9894.kf@gmail.com');
+            // $this->send_mail('ONE MFG', 'pahr9894.kf@gmail.com', 2);
         } catch (\Exception $e) {
             dd($e);
         }
@@ -119,7 +119,7 @@ class CotizacionesController extends Controller
     }
 
             DB::commit();
-            return response()->json(['message' => 'Cotizacion creada con éxito',  "type" => 'success'], 201);
+            return response()->json([ 'cotizacion_id' => $cotizacionHeader->id, 'message' => 'Cotizacion creada con éxito',  "type" => 'success'], 201);
           } catch (\Exception $e) {
             DB::rollback();
             return response()->json(['message' => 'Error en => '.$e->getMessage(),  "type" => 'error'], 400);
@@ -213,22 +213,46 @@ public function generarPDFyEnviarCorreo()
     return response()->json(['message' => 'PDF generado y enviado por correo']);
 }
 
-public function send_mail( $nombreEmpresa, $to )
+public function send_mail( $nombreEmpresa, $to, $cotizacion_id )
 {
     $data["email"] = $to;
         $data["title"] = "De {$nombreEmpresa}";
         $data["body"] = "";
+        $cotizacionheader = Cotizacion::where('cotizacion.id', $cotizacion_id)
+        ->join('clientes AS c', 'c.id', 'cotizacion.cliente_id')
+        ->selectRaw("c.nombre, c.direccion, c.codigo_postal, c.image_path, c.correo, c.telefono, cotizacion.*")
+        ->first();
 
-        $pdf = PDF::loadView('emails.mail', $data);
+    $detail = CotizacionDetail::select([
+        "cotizacion_details.id",
+        "cotizacion_details.cotizacion_id",
+        "cotizacion_details.producto_id",
+        "cotizacion_details.cantidad",
+        "cotizacion_details.precio",
+        "cotizacion_details.comentario",
+        "cotizacion_details.importe",
+        "p.clave"
+    ])
+    ->join('productos AS p', function($join){
+          $join->on('p.id', 'cotizacion_details.producto_id');
+    })
+    ->where('cotizacion_id', $cotizacion_id)
+    ->get();
+    $data_html = [
+        "header" => $cotizacionheader,
+        "detail" => $detail
+    ];
+        $pdf = PDF::loadView('emails.cotizaciones-send', $data_html);
         $pdfContent = $pdf->output();
         $pdfBase64 = base64_encode($pdfContent);
+        // dd($pdfBase64);
 
 
-        Mail::send('emails.mail', $data, function($message)use($data, $pdf) {
-            $message->to($data["email"], $data["email"])
-                    ->subject($data["title"])
-                    ->attachData($pdf->output(), "text.pdf");
-        });
+        // Mail::send('emails.email', $data, function($message)use($data, $pdfContent) {
+        //     $message->to($data["email"], $data["email"])
+        //             ->subject($data["title"])
+        //             ->attachData($pdfContent, 'cotizacion.pdf');
+        // });
 
         // dd('Mail sent successfully');
         return response()->json([ "type" => "success", "msg" => "success" ]);
@@ -360,7 +384,7 @@ public function update ( CotizacionRequest $request ){
                 ->delete();
 
             DB::commit();
-            return response()->json(['message' => 'Cotizacion editada con éxito',  "type" => 'success'], 201);
+            return response()->json([ 'cotizacion_id' => $cotizacion_id,  'message' => 'Cotizacion editada con éxito',  "type" => 'success'], 201);
         } catch (\Exception $e) {
             DB::rollback();
             return response()->json(['message' => 'Error en => '.$e->getMessage(), 'line' => $e->getLine(), "type" => 'error'], 400);
