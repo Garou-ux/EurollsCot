@@ -4,6 +4,7 @@ appControl = appModule;
 const url_store_cotizacion = document.getElementById('url_store_cotizacion').value;
 const url_get_products = document.getElementById('url_get_products').value;
 const url_get_clients = document.getElementById('url_get_clients').value;
+const url_get_pdf = document.getElementById('url_get_pdf').value;
 const searchInput = document.createElement('input');
 const selectPicker = document.getElementById('selectPicker');
 const subtotalElement = document.getElementById('subtotal');
@@ -22,7 +23,15 @@ const getClients = async () => {
 }
 
 
+const getpdf = async(cotizacion_id) => {
+    let data = {
+        _token : document.getElementById('ajaxtokengeneral').value,
+        cotizacion_id: cotizacion_id
+    };
+    let response = await appControl.fetchData(url_get_pdf, data, 'POST');
 
+ printJS({ printable: response.html, type: "raw-html", showModal: true })
+}
 
 const loadGrid = async () => {
     let products = await getProducts();
@@ -311,9 +320,7 @@ async function guardarDatos() {
         // location.reload();
     }
         // Hacer una solicitud AJAX para generar el PDF y mostrarlo
-    $.get('/generate-pdf', function (data) {
-        mostrarPDF(data.pdf);
-    });
+        getpdf(response.cotizacion_id);
 }
 
 

@@ -30,6 +30,7 @@
     <input type="hidden" value="{{ route('cotizaciones.store') }}" id="url_store_cotizacion">
     <input type="hidden" value="{{ route('products.cotizacion') }}" id="url_get_products">
     <input type="hidden" value="{{ route('clientes.cotizacion') }}" id="url_get_clients">
+    <input type="hidden" value="{{ route('cotizaciones.pdf') }}" id="url_get_pdf">
 
 
     {{-- <script type="text/javascript" src="{{ asset('js/CotizacionesController.js') }}"></script> --}}

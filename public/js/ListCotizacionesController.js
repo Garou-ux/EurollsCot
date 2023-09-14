@@ -4,6 +4,8 @@
 appControl = appModule;
 //agregamos los eventos de los dropdowns de cada cotizacion
 const url_delete_cotizacion = document.getElementById('url_delete_cotizacion').value;
+const url_get_pdf = document.getElementById('url_get_pdf').value;
+
 document.addEventListener('DOMContentLoaded', function() {
     const buttons = document.querySelectorAll('.group');
 
@@ -19,7 +21,15 @@ document.addEventListener('DOMContentLoaded', function() {
         });
     });
 });
+const getpdf = async(cotizacion_id) => {
+    let data = {
+        _token : document.getElementById('ajaxtokengeneral').value,
+        cotizacion_id: cotizacion_id
+    };
+    let response = await appControl.fetchData(url_get_pdf, data, 'POST');
 
+ printJS({ printable: response.html, type: "raw-html", showModal: true })
+}
 
 const confirmDeleteCotizacion =  ( cotizacionId ) => {
     Swal.fire({

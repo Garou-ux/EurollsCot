@@ -1,164 +1,13 @@
 // printJS({ printable: _url, type: 'pdf', showModal: true });
 
-// function LoadGridProductos(CotizacionId){
-//     $.ajax({
-//       type: "GET",
-//       // url: "http://localhost:8010/jsgridphp/countries/index.php"
-//       data: {Caso : 0},
-//       url: '../../controller/ctrlProducto.php?op=ListProductosGridCoti'
-//   }).done(function(countries) {
-
-//       countries.unshift({ ProductoId: "0", ProductoConcat: "" });
-//       //GETDataClients();
-//       $("#jsGridEditarCotizacion").jsGrid({
-
-//           width: "100%",
-//           filtering: false,
-//           inserting: true,
-//         editing: true,
-//           sorting: true,
-//           paging: true,
-//           autoload: true,
-//           deleteConfirm: "Estas seguro de eliminar el registo?",
-//           controller: {
-//             loadData: function(filter) {
-//               return $.ajax({
-//                   type: "POST",
-//                   url: "../../controller/ctrlCotizacion.php?op=LoadCotizacionDetXId",
-//                   data:{CotizacionId : CotizacionId }
-//               }).done(function(data, response){
-//                 var datagrid = $("#jsGridEditarCotizacion").jsGrid("option", "data");
-//                 MontosRenglon(datagrid);
-//                 });
-//           },
-//               insertItem: function(item) {
-//                     if (item.Cantidad != undefined){
-//                     item.CotizacionDetId = 0;
-//                     item.CotizacionId = parseInt($('#CotizacionModId').val());
-//                     var datagrid = $("#jsGridEditarCotizacion").jsGrid("option", "data");
-//                     MontosRenglon(datagrid);
-//                     }
-//               },
-//               updateItem: function(item) {
-//                   // return $.ajax({
-//                   //     type: "PUT",
-//                   //     url: "http://localhost:8010/jsgridphp/clients/index.php",
-//                   //     data: item
-//                   // });
-//               },
-//               deleteItem: function(item) {
-//                   // return $.ajax({
-//                   //     type: "POST",
-//                   //     url: "http://localhost:8010/jsgridphp/clients/index.php",
-//                   //     data: item
-//                   // });
-//                   // var clientIndex = $.inArray(item, clientes);
-//                   // clientes.splice(clientIndex, 1);
-//                   var datagrid = $("#jsGridEditarCotizacion").jsGrid("option", "data");
-//                   MontosRenglon(datagrid);
-//               }
-//           },
-
-//           onItemUpdating: function(args) {
-//             // cancel update of the item with empty 'name' field
-//             if(args.item.Cantidad > 0) {
-//                 //args.cancel = true;
-//                 let CantidadGrid = args.item.Cantidad * parseFloat(args.item.Precio);
-//                 args.item.Total = CantidadGrid;
-//                 var datagrid = $("#jsGridEditarCotizacion").jsGrid("option", "data");
-//                 MontosRenglon(datagrid);
-//             }
-//         },
-//     onItemInserting: function(args) {
-//       if(args.item.Cantidad >0) {
-//          let CantidadGrid = args.item.Cantidad * parseFloat(args.item.Precio);
-//          args.item.Total = CantidadGrid;
-//           var datagrid = $("#jsGridEditarCotizacion").jsGrid("option", "data");
-//           MontosRenglon(datagrid);
-//       }
-//   },
-//   onItemUpdated: function(args) {
-//     if(args.item.Cantidad > 0) {
-//       let CantidadGrid = args.item.Cantidad * parseFloat(args.item.Precio);
-//       args.item.Total = CantidadGrid;
-//       var datagrid = $("#jsGridEditarCotizacion").jsGrid("option", "data");
-//       MontosRenglon(datagrid);
-//     }
-// },
-// onItemEditing: function(args) {
-//   if(args.item.Cantidad > 0) {
-//    let CantidadGrid = args.item.Cantidad * parseFloat(args.item.Precio);
-//                 args.item.Total = CantidadGrid;
-//                 var datagrid = $("#jsGridEditarCotizacion").jsGrid("option", "data");
-//     MontosRenglon(datagrid);
-//   }
-// },
-//     fields : [
-//      {name : "CotizacionDetId", title: "CotizacionDetId", visible : false},
-//      {name : "CotizacionId", title: "CotizacionId", visible : false},
-//     { name : "ProductoId", title: "Producto", type: "select", width: 100, items: countries, /*valueField: "ProductoId",*/ textField: "ProductoConcat" ,
-// //         insertTemplate: function(value, item) {
-// //           console.log('in inserttemplate 0');
-// //              var $select = jsGrid.fields.select.prototype.insertTemplate.call(this);
-// //              $select.addClass('selectpicker form-control');
-// //              $select.attr("data-live-search", "true");
-// //  $select.attr("data-container", "body");
-
-// //              setTimeout(function() {
-// //                  $select.selectpicker({
-// //                      liveSearch: true
-// //                  });
-// //                  $select.selectpicker('refresh');
-// //                  $select.selectpicker('render');
-// //              });
-// //              console.log('in inserttemplate 2');
-// //              return $select;
-// //          },
-//   // validate : { message: 'Ya seleccionaste ese producto', validator: function(value, item) {
-
-//   // if(value <= 0){
-//   // Mensaje = 'Favor de seleccionar un producto ;c';
-//   // return false;
-//   // }
-//   //   var gridData = $("#jsGrid").jsGrid("option", "data");
-
-//   //   for (i = 0; i < gridData.length; i++) {
-//   //         if(value == gridData[i].ProductoId ){
-//   //         Mensaje = 'Ya seleccionaste ese producto '
-//   //           return false;
-
-//   //         }
-//   //     }
-//   //   return true;
-
-//   // } }
-//   },
-//   {
-//       name : "Descripcion", title: "Descripcion", type : "text", filtering : false
-
-//   },
-//     { name : "Cantidad", title: "Cantidad", type: "number", width: 50, filtering: false,
-//   validate : { message: "La cantidad debe ser mayor a 0", validator: function(value, item){ return value > 0;}},
-//   },
-//     { name : "Precio", title: "Precio", type: "text", width: 50, filtering: false ,
-//   validate : { message: "El Precio debe ser mayor a 0", validator: function(value){ return parseFloat(value) > 0;}}
-//   },
-//     { name : "Total", title: "Total", width: 50, filtering: false, editable : false ,
-// //validate : { message: "El Total debe ser mayor a 0", validator: function(value){ return value;}}
-//   },
-//     { type : "control"}
-// ]
-//   });
-
-// });
-// }
 appControl = appModule;
 const cotizacionData = document.getElementById('cotizacion_data').value;
 const cotizacionDataJson = JSON.parse(cotizacionData);
 const url_update_cotizacion = document.getElementById('url_update_cotizacion').value
 const url_get_products = document.getElementById('url_get_products').value;
 const url_get_clients = document.getElementById('url_get_clients').value;
-const url_get_details = document.getElementById('url_get_details').value
+const url_get_details = document.getElementById('url_get_details').value;
+const url_get_pdf = document.getElementById('url_get_pdf').value;
 const searchInput = document.createElement('input');
 const selectPicker = document.getElementById('selectPicker');
 const subtotalElement = document.getElementById('subtotal');
@@ -175,6 +24,16 @@ const getProducts = async  () => {
 const getClients = async () => {
     let response = await appControl.fetchData(url_get_clients, {}, 'GET');
     return response;
+}
+
+const getpdf = async(cotizacion_id) => {
+    let data = {
+        _token : document.getElementById('ajaxtokengeneral').value,
+        cotizacion_id: cotizacion_id
+    };
+    let response = await appControl.fetchData(url_get_pdf, data, 'POST');
+
+ printJS({ printable: response.html, type: "raw-html", showModal: true })
 }
 
 const getDetails = async () => {
@@ -548,6 +407,7 @@ async function guardarDatos() {
     // $.get('/generate-pdf', function (data) {
     //     mostrarPDF(data.pdf);
     // });
+    getpdf(response.cotizacion_id);
 }
 
 

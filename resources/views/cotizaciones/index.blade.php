@@ -25,5 +25,7 @@
     </div>
 
     <input type="hidden" value="{{ route('cotizaciones.destroy') }}" id="url_delete_cotizacion">
+    <input type="hidden" value="{{ route('cotizaciones.pdf') }}" id="url_get_pdf">
+
     <script type="text/javascript" src="{{ asset('js/ListCotizacionesController.js') }}"></script>
 </x-app-layout>

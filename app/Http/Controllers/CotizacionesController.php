@@ -10,6 +10,7 @@ use App\Http\Requests\CotizacionRequest;
 use Mail;
 use DB;
 use PDF;
+use View;
 
 
 use Illuminate\Http\Request;
@@ -219,6 +220,9 @@ public function send_mail( $nombreEmpresa, $to )
         $data["body"] = "";
 
         $pdf = PDF::loadView('emails.mail', $data);
+        $pdfContent = $pdf->output();
+        $pdfBase64 = base64_encode($pdfContent);
+
 
         Mail::send('emails.mail', $data, function($message)use($data, $pdf) {
             $message->to($data["email"], $data["email"])
@@ -226,7 +230,45 @@ public function send_mail( $nombreEmpresa, $to )
                     ->attachData($pdf->output(), "text.pdf");
         });
 
-        dd('Mail sent successfully');
+        // dd('Mail sent successfully');
+        return response()->json([ "type" => "success", "msg" => "success" ]);
+}
+
+public function getCotizacionPDF( Request $request ){
+    // dd($request->all());
+    $cotizacionheader = Cotizacion::where('cotizacion.id',$request->cotizacion_id)
+        ->join('clientes AS c', 'c.id', 'cotizacion.cliente_id')
+        ->selectRaw("c.nombre, c.direccion, c.codigo_postal, c.image_path, c.correo, c.telefono, cotizacion.*")
+        ->first();
+
+    $detail = CotizacionDetail::select([
+        "cotizacion_details.id",
+        "cotizacion_details.cotizacion_id",
+        "cotizacion_details.producto_id",
+        "cotizacion_details.cantidad",
+        "cotizacion_details.precio",
+        "cotizacion_details.comentario",
+        "cotizacion_details.importe",
+        "p.clave"
+    ])
+    ->join('productos AS p', function($join){
+          $join->on('p.id', 'cotizacion_details.producto_id');
+    })
+    ->where('cotizacion_id', $request->cotizacion_id)
+    ->get();
+    $data = [
+        "header" => $cotizacionheader,
+        "detail" => $detail
+    ];
+    $view = View::make('emails.cotizaciones');
+    $view->data_html = $data;
+    $html = $view->render();
+    $res = [
+        "html" => $html,
+        "type" => "success",
+        "Data obtenida correctamente"
+    ];
+    return response()->json($res);
 }
 
 public function indexEdit( Cotizacion $cotizacion_id )

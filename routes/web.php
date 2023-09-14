@@ -77,6 +77,7 @@ Route::post('/cotizaciones/destroy', [CotizacionesController::class, 'destroy'])
 Route::get('/cotizaciones/{cotizacion_id}/edit', [CotizacionesController::class, 'indexEdit'])->middleware(['auth', 'verified'])->name('cotizaciones.edit');
 Route::post('/cotizaciones/getCotizacionDetails', [CotizacionesController::class, 'getCotizacionDetails'])->middleware(['auth', 'verified'])->name('cotizaciones.details');
 Route::post('/cotizaciones/update', [CotizacionesController::class, 'update'])->middleware(['auth', 'verified'])->name('cotizaciones.update');
+Route::post('cotizaciones/pdf', [CotizacionesController::class, 'getCotizacionPDF'])->middleware(['auth', 'verified'])->name('cotizaciones.pdf');
 
 
 #clientes
