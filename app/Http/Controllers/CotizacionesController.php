@@ -4,9 +4,10 @@ namespace App\Http\Controllers;
 use App\Models\Cotizacion;
 use App\Models\CotizacionDetail;
 use App\Models\Company;
+use App\Models\ClientesEmail;
 use Illuminate\Support\Facades\Validator;
 use App\Http\Requests\CotizacionRequest;
-// use App\Mail\EnviarCotizacionesMailable;
+
 use Mail;
 use DB;
 use PDF;
@@ -319,78 +320,136 @@ public function getCotizacionDetails( Request $request ){
     return response()->json($detail);
 }
 
+
+public function cloneCotizacion( $request, $cotizacion_id ){
+    try {
+        DB::beginTransaction();
+        $userId = $this->getSessionUserId();
+        $company_id = $this->getSessionCompanyId();
+        $cotizacionHeader = Cotizacion::create([
+            "cliente_id" => $request->cliente_id,
+            "cotizacion_id" => $cotizacion_id,
+            "company_id" => $company_id,
+            "status_id" => 1,
+            "created_by" => $userId,
+            "atencion" => $request->atencion,
+            "terminos" => $request->terminos
+        ]);
+          // Decodificar los detalles de la solicitud JSON
+$requestDetails = json_decode($request->details);
+// dd($request->all(), $requestDetails);
+// Validar los detalles
+foreach ($requestDetails as $detail) {
+    $validator = Validator::make((array) $detail, [
+        'producto_id' => 'required',
+        'precio' => 'required|numeric|min:1',
+        'cantidad' => 'required|numeric|min:1',
+        'importe' => 'required|numeric|min:1',
+        'comentario' => 'max:149'
+    ]);
+
+    if ($validator->fails()) {
+        return response()->json(['errors' => $validator->errors()], 400);
+    }
+
+    // Crear el objeto CotizacionDetail si la validación pasa
+    CotizacionDetail::create([
+        "cotizacion_id" => $cotizacionHeader->id,
+        "producto_id" => $detail->producto_id,
+        "cantidad" => $detail->cantidad,
+        "precio" => $detail->precio,
+        "importe" => $detail->importe,
+        "comentario" => $detail->comentario
+    ]);
+}
+
+        DB::commit();
+        return response()->json([ 'cotizacion_id' => $cotizacionHeader->id, 'message' => 'Cotizacion creada con éxito',  "type" => 'success'], 201);
+      } catch (\Exception $e) {
+        DB::rollback();
+        return response()->json(['message' => 'Error en => '.$e->getMessage(),  "type" => 'error'], 400);
+      }
+}
+
 public function update ( CotizacionRequest $request ){
         #edita la cotizacion
-        try {
-            DB::beginTransaction();
+        // try {
+            // DB::beginTransaction();
             $userId = $this->getSessionUserId();
             $company_id = $this->getSessionCompanyId();
             $cotizacion_id = $request->cotizacion_id;
-            $cotizacion = Cotizacion::find( $cotizacion_id );
-            // dd($request->all(), $request->cliente_id);
-            $cotizacion->cliente_id = intval($request->cliente_id);
-            $cotizacion->company_id =$company_id;
-            $cotizacion->status_id = 1;
-            $cotizacion->created_by = $userId;
-            $cotizacion->atencion = $request->atencion;
-            $cotizacion->terminos = $request->terminos;
-            $cotizacion->save();
-             // Obtener los IDs de productos existentes para el detalle de factura
-            $existingProductIds = CotizacionDetail::where('cotizacion_id', $cotizacion_id)->pluck('id')->toArray();
+            $result = $this->cloneCotizacion($request, $cotizacion_id);
+            return $result;
+        //     $cotizacion = Cotizacion::find( $cotizacion_id );
+        //     // dd($request->all(), $request->cliente_id);
+        //     $cotizacion->cliente_id = intval($request->cliente_id);
+        //     $cotizacion->company_id =$company_id;
+        //     $cotizacion->status_id = 1;
+        //     $cotizacion->created_by = $userId;
+        //     $cotizacion->atencion = $request->atencion;
+        //     $cotizacion->terminos = $request->terminos;
+        //     $cotizacion->save();
+        //      // Obtener los IDs de productos existentes para el detalle de factura
+        //     $existingProductIds = CotizacionDetail::where('cotizacion_id', $cotizacion_id)->pluck('id')->toArray();
 
-            // Decodificar los detalles de la solicitud JSON
-            $requestDetails = json_decode($request->details);
-            $updatedProducts = [];
-            // dd($request->all(), $requestDetails);
-            // Validar los detalles
-            foreach ($requestDetails as $detail) {
-                $validator = Validator::make((array) $detail, [
-                    'producto_id' => 'required',
-                    'precio' => 'required|numeric|min:1',
-                    'cantidad' => 'required|numeric|min:1',
-                    'importe' => 'required|numeric|min:1',
-                    'comentario' => 'max:149'
-                ]);
+        //     // Decodificar los detalles de la solicitud JSON
+        //     $requestDetails = json_decode($request->details);
+        //     $updatedProducts = [];
+        //     // dd($request->all(), $requestDetails);
+        //     // Validar los detalles
+        //     foreach ($requestDetails as $detail) {
+        //         $validator = Validator::make((array) $detail, [
+        //             'producto_id' => 'required',
+        //             'precio' => 'required|numeric|min:1',
+        //             'cantidad' => 'required|numeric|min:1',
+        //             'importe' => 'required|numeric|min:1',
+        //             'comentario' => 'max:149'
+        //         ]);
 
-                if ($validator->fails()) {
-                    return response()->json(['errors' => $validator->errors()], 400);
-                }
-                if( in_array($detail->id, $existingProductIds) ){
-                    $cotizacionDetail = CotizacionDetail::find($detail->id);
-                    $cotizacionDetail->cotizacion_id = $cotizacion_id;
-                    $cotizacionDetail->producto_id = $detail->producto_id;
-                    $cotizacionDetail->cantidad = $detail->cantidad;
-                    $cotizacionDetail->precio = $detail->precio;
-                    $cotizacionDetail->importe = $detail->importe;
-                    $cotizacionDetail->comentario = $detail->comentario;
-                    $cotizacionDetail->save();
-                    $updatedProducts [] ['id'] =  $cotizacionDetail->id;
-                }else
-                {
-                    $cotizacionDetail = CotizacionDetail::create([
-                        "cotizacion_id" => $cotizacion_id,
-                        "producto_id" => $detail->producto_id,
-                        "cantidad" => $detail->cantidad,
-                        "precio" => $detail->precio,
-                        "importe" => $detail->importe,
-                        "comentario" => $detail->comentario
-                    ]);
-                    $updatedProducts [] ['id'] =   $cotizacionDetail->id;
-                    // array_push( 'producto_id' => $updatedProducts, $detail->producto_id);
-                }
-            }
-            CotizacionDetail::where('cotizacion_id', $cotizacion_id)
-                ->whereNotIn('id', array_column($updatedProducts, 'id'))
-                ->delete();
+        //         if ($validator->fails()) {
+        //             return response()->json(['errors' => $validator->errors()], 400);
+        //         }
+        //         if( in_array($detail->id, $existingProductIds) ){
+        //             $cotizacionDetail = CotizacionDetail::find($detail->id);
+        //             $cotizacionDetail->cotizacion_id = $cotizacion_id;
+        //             $cotizacionDetail->producto_id = $detail->producto_id;
+        //             $cotizacionDetail->cantidad = $detail->cantidad;
+        //             $cotizacionDetail->precio = $detail->precio;
+        //             $cotizacionDetail->importe = $detail->importe;
+        //             $cotizacionDetail->comentario = $detail->comentario;
+        //             $cotizacionDetail->save();
+        //             $updatedProducts [] ['id'] =  $cotizacionDetail->id;
+        //         }else
+        //         {
+        //             $cotizacionDetail = CotizacionDetail::create([
+        //                 "cotizacion_id" => $cotizacion_id,
+        //                 "producto_id" => $detail->producto_id,
+        //                 "cantidad" => $detail->cantidad,
+        //                 "precio" => $detail->precio,
+        //                 "importe" => $detail->importe,
+        //                 "comentario" => $detail->comentario
+        //             ]);
+        //             $updatedProducts [] ['id'] =   $cotizacionDetail->id;
+        //             // array_push( 'producto_id' => $updatedProducts, $detail->producto_id);
+        //         }
+        //     }
+        //     CotizacionDetail::where('cotizacion_id', $cotizacion_id)
+        //         ->whereNotIn('id', array_column($updatedProducts, 'id'))
+        //         ->delete();
 
-            DB::commit();
-            return response()->json([ 'cotizacion_id' => $cotizacion_id,  'message' => 'Cotizacion editada con éxito',  "type" => 'success'], 201);
-        } catch (\Exception $e) {
-            DB::rollback();
-            return response()->json(['message' => 'Error en => '.$e->getMessage(), 'line' => $e->getLine(), "type" => 'error'], 400);
-        }
-}
+        //     DB::commit();
+        //     return response()->json([ 'cotizacion_id' => $cotizacion_id,  'message' => 'Cotizacion editada con éxito',  "type" => 'success'], 201);
+        // } catch (\Exception $e) {
+        //     DB::rollback();
+        //     return response()->json(['message' => 'Error en => '.$e->getMessage(), 'line' => $e->getLine(), "type" => 'error'], 400);
+        // }
 
+
+    }
+    public function cotizacionesEmail( Request $request ){
+        $emails = ClientesEmail::where('cliente_id', $request->cliente_id)->get();
+        return response()->json($emails);
+    }
 
 
 }

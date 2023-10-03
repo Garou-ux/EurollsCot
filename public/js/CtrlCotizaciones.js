@@ -5,6 +5,7 @@ const url_store_cotizacion = document.getElementById('url_store_cotizacion').val
 const url_get_products = document.getElementById('url_get_products').value;
 const url_get_clients = document.getElementById('url_get_clients').value;
 const url_get_pdf = document.getElementById('url_get_pdf').value;
+const url_get_client_email = document.getElementById('url_get_client_email').value;
 const searchInput = document.createElement('input');
 const selectPicker = document.getElementById('selectPicker');
 const subtotalElement = document.getElementById('subtotal');

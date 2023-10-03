@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 use App\Models\Cliente;
+use App\Models\ClientesEmail;
 
 use Illuminate\Http\Request;
 
@@ -81,5 +82,13 @@ class ClientesController extends Controller
 
     public function getclientesforcotizacion(){
         return Cliente::all();
+    }
+
+    public function saveClienteEmail( $cliente_id, $correo ){
+        return ClientesEmail::updateOrCreate([
+            "cliente_id" => $cliente_id,
+            "correo" => $correo
+        ], [ "cliente_id" => $cliente_id,
+        "correo" => $correo  ]);
     }
 }

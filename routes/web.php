@@ -78,13 +78,15 @@ Route::get('/cotizaciones/{cotizacion_id}/edit', [CotizacionesController::class,
 Route::post('/cotizaciones/getCotizacionDetails', [CotizacionesController::class, 'getCotizacionDetails'])->middleware(['auth', 'verified'])->name('cotizaciones.details');
 Route::post('/cotizaciones/update', [CotizacionesController::class, 'update'])->middleware(['auth', 'verified'])->name('cotizaciones.update');
 Route::post('cotizaciones/pdf', [CotizacionesController::class, 'getCotizacionPDF'])->middleware(['auth', 'verified'])->name('cotizaciones.pdf');
-
+Route::post('cotizaciones/options', [CotizacionesController::class, 'cotizacionesOptions'])->middleware(['auth', 'verified'])->name('cotizaciones.options');
+Route::post('cotizaciones/emails', [CotizacionesController::class, 'cotizacionesEmail'])->middleware(['auth', 'verified'])->name('cotizaciones.email');
 
 #clientes
 Route::get('clientes', [ClientesController::class, 'index'])->middleware(['auth', 'verified'])->name('clientes.index');
 Route::post('clientes', [ClientesController::class, 'store'])->middleware(['auth', 'verified'])->name('clientes.store');
 Route::post('clientes/destroy', [ClientesController::class, 'destroy'])->middleware(['auth', 'verified'])->name('clientes.destroy');
 Route::get('clientes/getclientesforcotizacion', [ClientesController::class, 'getclientesforcotizacion'])->middleware(['auth', 'verified'])->name('clientes.cotizacion');
+Route::post('clientes/saveClienteEmail', [ClientesController::class, 'saveClienteEmail'])->middleware(['auth', 'verified'])->name('clientes.saveClienteEmail');
 
 
 Route::post('/guardar-opcion', [OpcionController::class, 'guardarOpcion']);
