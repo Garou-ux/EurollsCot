@@ -383,7 +383,10 @@ foreach ($requestDetails as $detail) {
         "comentario" => $detail->comentario
     ]);
 }
-
+        if( $request->is_input){
+            $cliController = new ClientesController;
+            $cliController->saveClienteEmail($request->cliente_id, $request->correo);
+        }
         DB::commit();
         return response()->json([ 'cotizacion_id' => $cotizacionHeader->id, 'message' => 'Cotizacion creada con éxito',  "type" => 'success'], 201);
       } catch (\Exception $e) {

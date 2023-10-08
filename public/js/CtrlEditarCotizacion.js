@@ -505,6 +505,8 @@ async function guardarDatos() {
         cliente_id: cliente_id,
         atencion:   atencion,
         terminos:   terminos,
+        is_input: is_input,
+        correo: valorAGuardar,
         details:    JSON.stringify(dataToSend)
     }
     // console.log(data);
