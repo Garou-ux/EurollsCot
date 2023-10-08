@@ -18,7 +18,7 @@
                     <div class="space-y-6 text-slate-700">
                         <x-application-logo class="block h-9 w-auto fill-current text-gray-800 dark:text-gray-200" />
 
-                    <p class="text-xl font-extrabold tracking-tight uppercase font-body">
+                    <p class="text-xl font-extrabold tracking-tight uppercase font-body" style="font-size: 1.25rem; font-weight: 800; letter-spacing: 0.025em;">
                         {{-- One Mfg Cotización #  --}}
                         {{ __('Cotizacion #') }} {{ $header->id }}
                     </p>
@@ -32,9 +32,9 @@
                         Detalle Cliente:
                     </p>
                     <p>Direccion:</p>
-                    <p>{{ $header->direccion  }}</p>
-                    <p>{{ $header->correo }}</p>
-                    <p>{{ $header->telefono }}</p>
+                    <p style="font-size: 0.875rem; font-weight: 400; line-height: 1.25rem;">{{ $header->direccion  }}</p>
+                    <p style="font-size: 0.875rem; font-weight: 400; line-height: 1.25rem;">{{ $header->correo }}</p>
+                    <p style="font-size: 0.875rem; font-weight: 400; line-height: 1.25rem;">{{ $header->telefono }}</p>
                     </div>
                     <div class="text-sm font-light text-slate-500">
                         <p class="text-sm font-normal text-slate-700">One Mfg</p>
@@ -45,136 +45,23 @@
                     </div>
                     <div class="text-sm font-light text-slate-500">
                     <p class="text-sm font-normal text-slate-700">Fecha</p>
-                    <p> {{ $header->created_at }} </p>
+                    <p style="font-size: 0.875rem; font-weight: 400; line-height: 1.25rem;">{{ $header->created_at }}</p>
 
                     <p class="mt-2 text-sm font-normal text-slate-700">
                         Atención
                     </p>
-                    <p>{{ $header->atencion }}</p>
+                    <p style="font-size: 0.875rem; font-weight: 400; line-height: 1.25rem;">{{ $header->atencion }}</p>
                     </div>
                     <div class="text-sm font-light text-slate-500">
                     <p class="text-sm font-normal text-slate-700">Terminos</p>
-                    <p>{{ $header->terminos }}</p>
-
-                    {{-- <p class="mt-2 text-sm font-normal text-slate-700">Due</p>
-                    <p>00.00.00</p> --}}
+                    <p style="font-size: 0.875rem; font-weight: 400; line-height: 1.25rem;">{{ $header->terminos }}</p>
                     </div>
                     </div>
                     </div>
                 </div>
 
-                <div class="p-9">
-                    <div class="flex flex-col mx-0 mt-8">
-                    <table class="min-w-full divide-y divide-slate-500 table-responsive">
-                        <thead>
-                            <tr>
-                                <th scope="col" class="py-3.5 pl-4 pr-3 text-left text-sm font-normal text-slate-700 sm:pl-6 md:pl-0">
-                                    Material
-                                </th>
-                                <th scope="col" class="py-3.5 pl-4 pr-3 text-left text-sm font-normal text-slate-700 sm:pl-6 md:pl-0">
-                                    Cantidad
-                                </th>
-                                <th scope="col" class="py-3.5 pl-4 pr-3 text-left text-sm font-normal text-slate-700 sm:pl-6 md:pl-0">
-                                    Precio
-                                </th>
-                                <th scope="col" class="py-3.5 pl-4 pr-3 text-left text-sm font-normal text-slate-700 sm:pl-6 md:pl-0">
-                                    Importe
-                                </th>
-                                <th scope="col" class="py-3.5 pl-4 pr-3 text-left text-sm font-normal text-slate-700 sm:pl-6 md:pl-0">
-                                    Comentario
-                                </th>
-                            </tr>
-                        </thead>
+                <!-- ... Tu contenido restante ... -->
 
-                    <tbody>
-                        @php
-                            $subtotal = 0;
-                        @endphp
-                        @foreach ($detail as $detalle )
-                        <tr class="border-b border-slate-200">
-                            <td class="py-4 pl-4 pr-3 text-sm sm:pl-6 md:pl-0 text-left"  style="width: 10%;">
-                                {{ $detalle->clave }}
-                            </td>
-                            <td class="px-3 py-4 text-sm text-left text-slate-500 sm:table-cell" style="width: 5%;">
-                                {{ $detalle->cantidad }}
-                            </td>
-                            <td class="py-4 pl-3 pr-4 text-sm text-left text-slate-500 sm:pr-6 md:pr-0" style="width: 5%;">
-                                {{ $detalle->precio }}
-                            </td>
-                            <td class="py-4 pl-3 pr-4 text-sm text-left text-slate-500 sm:pr-6 md:pr-0" style="width: 5%;">
-                                {{ $detalle->importe }}
-                            </td>
-                            <td class="px-3 py-4 text-sm text-left text-slate-500 sm:table-cell table-responsive">
-                                <div class="mt-0.5 text-slate-500 sm:hidden">
-                                    <small>{{ $detalle->comentario }} </small>
-                                </div>
-                            </td>
-
-                        </tr>
-                        @php
-                            $subtotal += $detalle->importe;
-                        @endphp
-                        @endforeach
-                    <!-- Here you can write more products/tasks that you want to charge for-->
-                    </tbody>
-                    <tfoot>
-                        <tr>
-                         <th scope="row" colspan="3" class="hidden pt-6 pl-6 pr-3 text-sm font-light text-right text-slate-500 sm:table-cell md:pl-0">
-                          Subtotal
-                         </th>
-                         <th scope="row"  class="pt-6 pl-4 pr-3 text-sm font-light text-left text-slate-500 sm:hidden">
-                          Subtotal
-                         </th>
-                         <td  id="subtotal" class="pt-6 pl-3 pr-4 text-sm text-right text-slate-500 sm:pr-6 md:pr-0">
-                             ${{ round($subtotal, 2) }}
-                         </td>
-                        </tr>
-                        <tr>
-                         <th scope="row" colspan="3" class="hidden pt-4 pl-6 pr-3 text-sm font-light text-right text-slate-500 sm:table-cell md:pl-0">
-                          Iva
-                         </th>
-                         <th scope="row" class="pt-4 pl-4 pr-3 text-sm font-light text-left text-slate-500 sm:hidden">
-                          Iva
-                         </th>
-                         <td id="iva" class="pt-4 pl-3 pr-4 text-sm text-right text-slate-500 sm:pr-6 md:pr-0">
-                          @php
-                              $iva = $subtotal / 1.16;
-                          @endphp
-                          ${{ round($iva,2) }}
-                         </td>
-                        </tr>
-                        <tr>
-                         <th scope="row" colspan="3" class="hidden pt-4 pl-6 pr-3 text-sm font-normal text-right text-slate-700 sm:table-cell md:pl-0">
-                          Total
-                         </th>
-                         <th scope="row"  class="pt-4 pl-4 pr-3 text-sm font-normal text-left text-slate-700 sm:hidden">
-                          Total
-                         </th>
-                         <td id="total" class="pt-4 pl-3 pr-4 text-sm font-normal text-right text-slate-700 sm:pr-6 md:pr-0">
-                          @php
-                              $total = $subtotal + $iva;
-                          @endphp
-                          ${{ round($total, 2) }}
-                         </td>
-                        </tr>
-                       </tfoot>
-                    </table>
-                    </div>
-                </div>
-                <div class="mt-48 p-9">
-                    <div class="border-t pt-9 border-slate-200">
-                     <div class="text-sm font-light text-slate-700">
-                      <p>
-                        Observations:
-                        Working Hours: Monday to friday 8:00 a 18:00 hours. Rush jobs, cause extra fees.
-                        Variations of 5% of the exchange rate modifies the proposal
-                        After accepting the material, no changes of refunds are accepted
-                        In case of cancellation, the purchase order will cause a charge o 20% of its total value
-                      </p>
-                     </div>
-                    </div>
-                   </div>
-                </div>
                 </article>
                 </div>
             </section>

@@ -31,9 +31,9 @@ class CotizacionesController extends Controller
         try {
             // $this->send_mail('ONE MFG', 'pahr9894.kf@gmail.com', 2);
             // $this->enviarCorreoConPDF(2);
-            // $explosion = new CotizacionesEmailJob();
-            // $explosion->setCotizacionIdParam(2); // saptopit WO
-            // dispatch($explosion);
+            $explosion = new CotizacionesEmailJob();
+            $explosion->setCotizacionIdParam(2); // saptopit WO
+            dispatch($explosion);
 
         } catch (\Exception $e) {
             dd($e);
