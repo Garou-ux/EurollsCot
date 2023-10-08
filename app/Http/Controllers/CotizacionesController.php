@@ -7,8 +7,11 @@ use App\Models\Company;
 use App\Models\ClientesEmail;
 use Illuminate\Support\Facades\Validator;
 use App\Http\Requests\CotizacionRequest;
+use Illuminate\Support\Facades\Mail;
+use App\Jobs\CotizacionesEmailJob;
+use App\Http\Controllers\ClientesController;
 
-use Mail;
+// use Mail;
 use DB;
 use PDF;
 use View;
@@ -27,20 +30,28 @@ class CotizacionesController extends Controller
     {
         try {
             // $this->send_mail('ONE MFG', 'pahr9894.kf@gmail.com', 2);
+            // $this->enviarCorreoConPDF(2);
+            // $explosion = new CotizacionesEmailJob();
+            // $explosion->setCotizacionIdParam(2); // saptopit WO
+            // dispatch($explosion);
+
         } catch (\Exception $e) {
             dd($e);
         }
+        $company_id = $this->getSessionCompanyId();
         $cotizaciones = $this->getCotizacions();
         $userId = auth()->id();
         // dd($userId);
-        return view('cotizaciones.index', compact('cotizaciones'));
+        return view('cotizaciones.index', compact('cotizaciones', 'company_id'));
     }
 
 
     #vista para crear la cotizacion
     public function create()
     {
-        return view('cotizaciones.new-cotizacion');
+        $company_id = $this->getSessionCompanyId();
+
+        return view('cotizaciones.new-cotizacion', compact('company_id'));
     }
 
     public function getCotizacions(){
@@ -71,7 +82,7 @@ class CotizacionesController extends Controller
                         ->groupBy([
                             'cotizacion.id', 'cli.nombre', 'cli.direccion', 'cli.codigo_postal', 'comp.name', 'comp.direccion', 'comp.codigo_postal', 'cotizacion.created_at'
                         ])
-                        ->orderBy('cotizacion.created_at', 'asc')
+                        ->orderBy('cotizacion.created_at', 'desc')
                         ->get();
         return $cotizaciones;
     }
@@ -92,32 +103,36 @@ class CotizacionesController extends Controller
                 "terminos" => $request->terminos
             ]);
               // Decodificar los detalles de la solicitud JSON
-    $requestDetails = json_decode($request->details);
-    // dd($request->all(), $requestDetails);
-    // Validar los detalles
-    foreach ($requestDetails as $detail) {
-        $validator = Validator::make((array) $detail, [
-            'producto_id' => 'required',
-            'precio' => 'required|numeric|min:1',
-            'cantidad' => 'required|numeric|min:1',
-            'importe' => 'required|numeric|min:1',
-            'comentario' => 'max:149'
-        ]);
+            $requestDetails = json_decode($request->details);
+            // dd($request->all(), $requestDetails);
+            // Validar los detalles
+            foreach ($requestDetails as $detail) {
+                $validator = Validator::make((array) $detail, [
+                    'producto_id' => 'required',
+                    'precio' => 'required|numeric|min:1',
+                    'cantidad' => 'required|numeric|min:1',
+                    'importe' => 'required|numeric|min:1',
+                    'comentario' => 'max:149'
+                ]);
 
-        if ($validator->fails()) {
-            return response()->json(['errors' => $validator->errors()], 400);
-        }
+                if ($validator->fails()) {
+                    return response()->json(['errors' => $validator->errors()], 400);
+                }
 
-        // Crear el objeto CotizacionDetail si la validación pasa
-        CotizacionDetail::create([
-            "cotizacion_id" => $cotizacionHeader->id,
-            "producto_id" => $detail->producto_id,
-            "cantidad" => $detail->cantidad,
-            "precio" => $detail->precio,
-            "importe" => $detail->importe,
-            "comentario" => $detail->comentario
-        ]);
-    }
+                // Crear el objeto CotizacionDetail si la validación pasa
+                CotizacionDetail::create([
+                    "cotizacion_id" => $cotizacionHeader->id,
+                    "producto_id" => $detail->producto_id,
+                    "cantidad" => $detail->cantidad,
+                    "precio" => $detail->precio,
+                    "importe" => $detail->importe,
+                    "comentario" => $detail->comentario
+                ]);
+            }
+            if( $request->is_input){
+                $cliController = new ClientesController;
+                $cliController->saveClienteEmail($request->cliente_id, $request->correo);
+            }
 
             DB::commit();
             return response()->json([ 'cotizacion_id' => $cotizacionHeader->id, 'message' => 'Cotizacion creada con éxito',  "type" => 'success'], 201);
@@ -285,8 +300,11 @@ public function getCotizacionPDF( Request $request ){
         "header" => $cotizacionheader,
         "detail" => $detail
     ];
+    $header = $cotizacionheader;
+
     $view = View::make('emails.cotizaciones');
-    $view->data_html = $data;
+    $view->header = $cotizacionheader;
+    $view->detail = $detail;
     $html = $view->render();
     $res = [
         "html" => $html,
@@ -449,6 +467,53 @@ public function update ( CotizacionRequest $request ){
     public function cotizacionesEmail( Request $request ){
         $emails = ClientesEmail::where('cliente_id', $request->cliente_id)->get();
         return response()->json($emails);
+    }
+
+    public function enviarCorreoConPDF($cotizacion_id) {
+        $cotizacionheader = Cotizacion::where('cotizacion.id',$cotizacion_id)
+        ->join('clientes AS c', 'c.id', 'cotizacion.cliente_id')
+        ->selectRaw("c.nombre, c.direccion, c.codigo_postal, c.image_path, c.correo, c.telefono, cotizacion.*")
+        ->first();
+
+    $detail = CotizacionDetail::select([
+        "cotizacion_details.id",
+        "cotizacion_details.cotizacion_id",
+        "cotizacion_details.producto_id",
+        "cotizacion_details.cantidad",
+        "cotizacion_details.precio",
+        "cotizacion_details.comentario",
+        "cotizacion_details.importe",
+        "p.clave"
+    ])
+    ->join('productos AS p', function($join){
+          $join->on('p.id', 'cotizacion_details.producto_id');
+    })
+    ->where('cotizacion_id', $cotizacion_id)
+    ->get();
+
+    $data = [
+        "header" => $cotizacionheader,
+        "detail" => $detail
+    ];
+
+        // Genera el PDF usando DomPDF y obtén el contenido HTML del PDF
+        $view = View::make('emails.cotizaciones');
+        $view->data_html = $data;
+        $html = $view->render();
+
+        // Nombre del archivo PDF (puedes personalizarlo)
+        $pdfFileName = 'cotizacion.pdf';
+
+        // Guarda el PDF en una ubicación temporal
+        $pdfPath = storage_path('app/' . $pdfFileName);
+        \PDF::loadHTML($html)->save($pdfPath);
+        // dd($data);
+        // Envía el correo con el archivo PDF adjunto
+        Mail::to('pahr9894.kf@gmail.com')
+            ->send(new CotizacionEmail($pdfPath));
+
+        // Borra el archivo temporal después de enviar el correo (opcional)
+        unlink($pdfPath);
     }
 
 

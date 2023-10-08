@@ -20,7 +20,7 @@
 
                     <p class="text-xl font-extrabold tracking-tight uppercase font-body">
                         {{-- One Mfg Cotización #  --}}
-                        {{ __('Cotizacion #') }} {{ $data_html["header"]->id }}
+                        {{ __('Cotizacion #') }} {{ $header->id }}
                     </p>
                     </div>
                 </div>
@@ -32,9 +32,9 @@
                         Detalle Cliente:
                     </p>
                     <p>Direccion:</p>
-                    <p>{{ $data_html["header"]->direccion  }}</p>
-                    <p>{{ $data_html["header"]->correo }}</p>
-                    <p>{{ $data_html["header"]->telefono }}</p>
+                    <p>{{ $header->direccion  }}</p>
+                    <p>{{ $header->correo }}</p>
+                    <p>{{ $header->telefono }}</p>
                     </div>
                     <div class="text-sm font-light text-slate-500">
                         <p class="text-sm font-normal text-slate-700">One Mfg</p>
@@ -45,16 +45,16 @@
                     </div>
                     <div class="text-sm font-light text-slate-500">
                     <p class="text-sm font-normal text-slate-700">Fecha</p>
-                    <p> {{ $data_html["header"]->created_at }} </p>
+                    <p> {{ $header->created_at }} </p>
 
                     <p class="mt-2 text-sm font-normal text-slate-700">
                         Atención
                     </p>
-                    <p>{{ $data_html["header"]->atencion }}</p>
+                    <p>{{ $header->atencion }}</p>
                     </div>
                     <div class="text-sm font-light text-slate-500">
                     <p class="text-sm font-normal text-slate-700">Terminos</p>
-                    <p>{{ $data_html["header"]->terminos }}</p>
+                    <p>{{ $header->terminos }}</p>
 
                     {{-- <p class="mt-2 text-sm font-normal text-slate-700">Due</p>
                     <p>00.00.00</p> --}}
@@ -65,54 +65,54 @@
 
                 <div class="p-9">
                     <div class="flex flex-col mx-0 mt-8">
-                    <table class="min-w-full divide-y divide-slate-500">
-                    <thead>
-                    <tr>
-                        <th scope="col" class="py-3.5 pl-4 pr-3 text-left text-sm font-normal text-slate-700 sm:pl-6 md:pl-0">
-                            Material
-                            </th>
-                        <th scope="col" class="py-3.5 pl-4 pr-3 text-left text-sm font-normal text-slate-700 sm:pl-6 md:pl-0">
-                        Comentario
-                        </th>
-                        <th scope="col" class=" py-3.5 px-3 text-right text-sm font-normal text-slate-700 sm:table-cell">
-                        Cantidad
-                        </th>
-                        <th scope="col" class=" py-3.5 px-3 text-right text-sm font-normal text-slate-700 sm:table-cell">
-                        Precio
-                        </th>
-                        <th scope="col" class="py-3.5 pl-3 pr-4 text-right text-sm font-normal text-slate-700 sm:pr-6 md:pr-0">
-                        Importe
-                        </th>
-                    </tr>
-                    </thead>
+                    <table class="min-w-full divide-y divide-slate-500 table-responsive">
+                        <thead>
+                            <tr>
+                                <th scope="col" class="py-3.5 pl-4 pr-3 text-left text-sm font-normal text-slate-700 sm:pl-6 md:pl-0">
+                                    Material
+                                </th>
+                                <th scope="col" class="py-3.5 pl-4 pr-3 text-left text-sm font-normal text-slate-700 sm:pl-6 md:pl-0">
+                                    Cantidad
+                                </th>
+                                <th scope="col" class="py-3.5 pl-4 pr-3 text-left text-sm font-normal text-slate-700 sm:pl-6 md:pl-0">
+                                    Precio
+                                </th>
+                                <th scope="col" class="py-3.5 pl-4 pr-3 text-left text-sm font-normal text-slate-700 sm:pl-6 md:pl-0">
+                                    Importe
+                                </th>
+                                <th scope="col" class="py-3.5 pl-4 pr-3 text-left text-sm font-normal text-slate-700 sm:pl-6 md:pl-0">
+                                    Comentario
+                                </th>
+                            </tr>
+                        </thead>
+
                     <tbody>
                         @php
                             $subtotal = 0;
                         @endphp
-                        @foreach ($data_html["detail"] as $detail )
+                        @foreach ($detail as $detalle )
                         <tr class="border-b border-slate-200">
-                            <td class="py-4 pl-4 pr-3 text-sm sm:pl-6 md:pl-0">
-                            {{-- <div class="font-medium text-slate-700">Tesla Truck</div> --}}
-                            <div class="mt-0.5 text-slate-500 sm:hidden">
-                            {{ $detail->clave }}
-                            </div>
+                            <td class="py-4 pl-4 pr-3 text-sm sm:pl-6 md:pl-0 text-left"  style="width: 10%;">
+                                {{ $detalle->clave }}
                             </td>
-                            <td class=" px-3 py-4 text-sm text-right text-slate-500 sm:table-cell">
-                                {{ $detail->comentario }}
+                            <td class="px-3 py-4 text-sm text-left text-slate-500 sm:table-cell" style="width: 5%;">
+                                {{ $detalle->cantidad }}
                             </td>
-                            <td class=" px-3 py-4 text-sm text-right text-slate-500 sm:table-cell">
-                             {{ $detail->cantidad }}
+                            <td class="py-4 pl-3 pr-4 text-sm text-left text-slate-500 sm:pr-6 md:pr-0" style="width: 5%;">
+                                {{ $detalle->precio }}
                             </td>
-                            <td class="py-4 pl-3 pr-4 text-sm text-right text-slate-500 sm:pr-6 md:pr-0">
-                                {{ $detail->precio }}
+                            <td class="py-4 pl-3 pr-4 text-sm text-left text-slate-500 sm:pr-6 md:pr-0" style="width: 5%;">
+                                {{ $detalle->importe }}
+                            </td>
+                            <td class="px-3 py-4 text-sm text-left text-slate-500 sm:table-cell table-responsive">
+                                <div class="mt-0.5 text-slate-500 sm:hidden">
+                                    <small>{{ $detalle->comentario }} </small>
+                                </div>
                             </td>
 
-                            <td class="py-4 pl-3 pr-4 text-sm text-right text-slate-500 sm:pr-6 md:pr-0">
-                                {{ $detail->importe }}
-                            </td>
                         </tr>
                         @php
-                            $subtotal += $detail->importe;
+                            $subtotal += $detalle->importe;
                         @endphp
                         @endforeach
                     <!-- Here you can write more products/tasks that you want to charge for-->

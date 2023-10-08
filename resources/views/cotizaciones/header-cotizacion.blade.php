@@ -23,6 +23,7 @@
        <p id="email_cli"></p>
        <p id="codigo_postal"></p>
        {{-- fin datos de lciente --}}
+
       </div>
 
       {{-- datos empresa --}}

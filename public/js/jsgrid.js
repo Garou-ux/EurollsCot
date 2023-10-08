@@ -160,9 +160,12 @@
             var messages = $.map(args.errors, function(error) {
                 return error.message || null;
             });
-
+            console.log(messages);
+            messages.forEach(message => {
+                Swal.fire('One MFG', message, 'warning');
+            });
             // window.alert([this.invalidMessage].concat(messages).join("\n"));
-            Swal.fire('One MFG', 'La cantidad o el importe deben de ser mayor a 0', 'warning');
+
 
         },
 

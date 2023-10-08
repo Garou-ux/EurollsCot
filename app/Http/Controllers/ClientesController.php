@@ -14,7 +14,7 @@ class ClientesController extends Controller
     {
         $clientes = Cliente::all();
         $image_not_found = asset('assets/onemfg_logo.png') ;
-        return view('catalogs.Clientes.list', compact('clientes'));
+        return view('catalogs.Clientes.list', compact('clientes', 'image_not_found'));
     }
 
     public function store(Request $request)
@@ -38,6 +38,7 @@ class ClientesController extends Controller
                     'telefono' => $request->input('telefono')
                 ]);
                 $this->storeClientImage($cliente, $request);
+                $this->saveClienteEmail($cliente->id, $cliente->correo);
                 return response()->json(['message' => 'Cliente creado con éxito', "type" => 'success'], 200);
             }else{
                 $cliente = Cliente::find($request->clienteId);
@@ -48,9 +49,9 @@ class ClientesController extends Controller
                 $cliente->telefono = $request->telefono;
                 $cliente->save();
                 $this->storeClientImage($cliente, $request);
+                $this->saveClienteEmail($cliente->id, $cliente->correo);
                 return response()->json(['message' => 'Cliente actualizado con éxito',  "type" => 'success'], 200);
             }
-
         } catch (\Exception $e) {
             return response()->json(['message' => "Error en => {$e->getMessage()}", "type" => "error"], 400);
         }
@@ -85,10 +86,13 @@ class ClientesController extends Controller
     }
 
     public function saveClienteEmail( $cliente_id, $correo ){
-        return ClientesEmail::updateOrCreate([
+        $clienteEmail = ClientesEmail::updateOrCreate([
             "cliente_id" => $cliente_id,
             "correo" => $correo
-        ], [ "cliente_id" => $cliente_id,
-        "correo" => $correo  ]);
+        ], [
+            'cliente_id' => $cliente_id,
+            'correo' => $correo
+        ]);
+        return $clienteEmail;
     }
 }

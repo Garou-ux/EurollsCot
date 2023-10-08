@@ -8,6 +8,10 @@ use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Foundation\Bus\Dispatchable;
 use Illuminate\Queue\InteractsWithQueue;
 use Illuminate\Queue\SerializesModels;
+use PDF;
+use Illuminate\Support\Facades\Mail;
+use App\Models\Cotizacion;
+use App\Models\CotizacionDetail;
 
 class CotizacionesEmailJob implements ShouldQueue
 {
@@ -18,9 +22,14 @@ class CotizacionesEmailJob implements ShouldQueue
      *
      * @return void
      */
+    protected $cotizacion_id;
     public function __construct()
     {
         //
+    }
+
+    public function setCotizacionIdParam( $cotizacion_id ){
+        $this->cotizacion_id = $cotizacion_id;
     }
 
     /**
@@ -30,6 +39,62 @@ class CotizacionesEmailJob implements ShouldQueue
      */
     public function handle()
     {
-        //
+        try {
+            logger('El trabajo en cola está siendo manejado');
+            $this->enviarCorreoConPDF($this->cotizacion_id);
+
+        } catch (\Exception $e) {
+            dd($e);
+        }
+    }
+
+    public function enviarCorreoConPDF($cotizacion_id) {
+        // dd($cotizacion_id);
+        $cotizacionheader = Cotizacion::where('cotizacion.id',$cotizacion_id)
+        ->join('clientes AS c', 'c.id', 'cotizacion.cliente_id')
+        ->selectRaw("c.nombre, c.direccion, c.codigo_postal, c.image_path, c.correo, c.telefono, cotizacion.*")
+        ->first();
+
+    $detail = CotizacionDetail::select([
+        "cotizacion_details.id",
+        "cotizacion_details.cotizacion_id",
+        "cotizacion_details.producto_id",
+        "cotizacion_details.cantidad",
+        "cotizacion_details.precio",
+        "cotizacion_details.comentario",
+        "cotizacion_details.importe",
+        "p.clave"
+    ])
+    ->join('productos AS p', function($join){
+          $join->on('p.id', 'cotizacion_details.producto_id');
+    })
+    ->where('cotizacion_id', $cotizacion_id)
+    ->get();
+
+    $data = [
+        "header" => $cotizacionheader,
+        "detail" => $detail
+    ];
+
+
+        $pdf = PDF::loadView('emails.cotizaciones', $data);
+        $pdf->setPaper('letter'); // Tamaño de página
+
+        // Guarda el PDF en una ubicación temporal
+        $pdfPath = storage_path('app/temp_pdf.pdf');
+        $pdf->save($pdfPath);
+
+        // Envía el correo con el PDF adjunto directamente
+        Mail::raw('Contenido del correo', function ($message) use ($pdfPath) {
+            $message->to('destinatario@example.com')
+                ->subject('Asunto del correo')
+                ->attach($pdfPath, [
+                    'as' => 'documento.pdf', // Nombre del archivo adjunto
+                    'mime' => 'application/pdf', // Tipo MIME
+                ]);
+        });
+
+        // Borra el archivo temporal (opcional)
+        unlink($pdfPath);
     }
 }

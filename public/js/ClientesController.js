@@ -32,7 +32,7 @@ const saveEditClient = async ( element ) => {
                     createModal.classList.add('hidden');
                     const data = await response.json();
                     Swal.fire('', data.message, data.type);
-                     location.reload();
+                    //  location.reload();
                 } else {
                     // Mostrar un mensaje de error si la respuesta no es exitosa
                     const data = await response.json();
