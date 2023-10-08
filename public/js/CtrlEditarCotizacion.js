@@ -13,6 +13,9 @@ const selectPicker = document.getElementById('selectPicker');
 const subtotalElement = document.getElementById('subtotal');
 const ivaElement = document.getElementById('iva');
 const totalElement = document.getElementById('total');
+const url_get_client_email = document.getElementById('url_get_client_email').value;
+
+let changeClient = false;
 let productos = [];
 console.log(cotizacionDataJson);
 
@@ -35,6 +38,13 @@ const getpdf = async(cotizacion_id) => {
 
  printJS({ printable: response.html, type: "raw-html", showModal: true })
 }
+
+const getClientesEmails = async( cliente_id ) => {
+    let data = { _token: document.getElementById('ajaxtokengeneral').value, cliente_id: cliente_id   };
+    let response = await appControl.fetchData(url_get_client_email, data, 'POST');
+    return response;
+};
+
 
 const getDetails = async () => {
     let data = {
@@ -69,11 +79,45 @@ function actualizarTotal(productos) {
 }
 
 
+function searchClient(emailsData) {
+    const searchEmailInput = document.getElementById('nuevo_input');
+    const searchTerm = searchEmailInput.value.toLowerCase();
+    const filteredOptions = emailsData.filter(option =>
+      option.correo.toLowerCase().includes(searchTerm)
+    );
+    const selectPicker = document.getElementById('nuevo_select');
+
+    // Limpia las opciones anteriores
+    while (selectPicker.options.length > 0) {
+      selectPicker.options[0].remove();
+    }
+
+    // Agrega las opciones filtradas
+    filteredOptions.forEach(option => {
+      const newOption = new Option(option.correo, option.id);
+      newOption.dataset.id = option.id;
+      newOption.dataset.cliente_id = option.cliente_id;
+      newOption.dataset.correo = option.correo;
+      // Agrega otros atributos data-* según tus necesidades
+      selectPicker.add(newOption);
+    });
+  }
+
+  // Función para verificar si una cadena es un correo electrónico válido
+function isValidEmail(email) {
+    const emailRegex = /^[a-zA-Z0-9._-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,4}$/;
+    return emailRegex.test(email);
+}
+
+
 document.addEventListener('DOMContentLoaded', async function() {
     appControl.mostrarLoading();
     await loadGrid();
     // await getDetails();
     const options = await getClients();
+    let nuevoInput; // Declaración de la variable fuera del bloque condicional
+    let label;
+    let nuevoSelect;
     function filterOptions() {
         const searchTerm = searchInput.value.toLowerCase();
         const filteredOptions = options.filter(option =>
@@ -107,14 +151,64 @@ document.addEventListener('DOMContentLoaded', async function() {
     const emailCli = document.getElementById('email_cli');
     const codigoPostal = document.getElementById('codigo_postal');
     fillCotizacionFields(cotizacionDataJson);
-    selectPicker.addEventListener('change', function () {
+    selectPicker.addEventListener('change', async function () {
         const selectedOption = this.options[this.selectedIndex];
             if (selectedOption) {
                 // Actualiza el contenido de los elementos <p> con los valores del dataset
                 direccionCli.textContent = selectedOption.dataset.direccion || '';
                 emailCli.textContent = selectedOption.dataset.correo || '';
                 codigoPostal.textContent = selectedOption.dataset.codigoPostal || '';
-                // Puedes agregar más actualizaciones de elementos <p> según los datos del dataset
+                console.log(selectedOption);
+                let cliId = selectedOption.dataset.id;
+                let emails = await getClientesEmails(cliId);
+                console.log(emails);
+                if (nuevoInput) {
+                    nuevoInput.remove();
+                  }
+                  if (label) {
+                    label.remove();
+                  }
+                  if (nuevoSelect) {
+                    nuevoSelect.remove();
+                  }
+
+                  // Crea un nuevo elemento input
+                  nuevoInput = document.createElement("input");
+                  nuevoInput.type = "text";
+                  nuevoInput.name = "nuevo_input";
+                  nuevoInput.id = "nuevo_input";
+                  nuevoInput.placeholder = "Correo de cliente";
+
+                  // Crea un nuevo label para el input
+                  label = document.createElement("label");
+                //   label.textContent = "Correos de Cliente";
+                  label.className = "text-xs text-gray-500"; // Estilo de letra pequeña
+
+                  // Crea un nuevo elemento select
+                  nuevoSelect = document.createElement("select");
+                  nuevoSelect.id = "nuevo_select";
+                  // Agrega opciones al nuevo select
+
+                //   nuevoSelect.add(opcion1);
+                //   nuevoSelect.add(opcion2);
+                emails.forEach(option => {
+                    const newOption = new Option(option.correo, option.id);
+                    newOption.dataset.id = option.id;
+                    newOption.dataset.cliente_id = option.cliente_id;
+                    newOption.dataset.correo = option.correo;
+                    // Agrega otros atributos data-* según tus necesidades
+                    nuevoSelect.add(newOption);
+                });
+
+                  // Inserta los nuevos elementos debajo del 'codigo_postal'
+                  codigoPostal.insertAdjacentElement("afterend", nuevoInput);
+                //   nuevoInput.insertAdjacentElement("afterend", label); // Inserta el label debajo del input
+                  nuevoInput.insertAdjacentElement("afterend", nuevoSelect);
+                //   nuevoInput.addEventListener('input', searchClient(emails));
+                  nuevoInput.addEventListener('input', () => {
+                    searchClient(emails);
+                  });
+
             }
     });
     appControl.cerrarLoading();
@@ -358,6 +452,40 @@ async function guardarDatos() {
     let cliente_id = document.getElementById('selectPicker').value;
     let terminos = document.getElementById('terminos').value;
     let atencion = document.getElementById('atencion').value;
+
+    const nuevoInput = document.getElementById('nuevo_input');
+    const nuevoSelect = document.getElementById('nuevo_select');
+
+    let valorAGuardar = ''; let is_input = false;
+
+    // Verifica si el valor del input es un correo electrónico válido
+    // Verifica si el valor del input es un correo electrónico válido
+    if (isValidEmail(nuevoInput.value)) {
+        // Muestra una alerta para confirmar el guardado
+        const result = await Swal.fire({
+          title: '¿Desea guardar el correo del cliente?',
+          text: nuevoInput.value,
+          icon: 'question',
+          showCancelButton: true,
+          confirmButtonText: 'Guardar',
+          cancelButtonText: 'Cancelar',
+        });
+
+        if (result.isConfirmed) {
+          valorAGuardar = nuevoInput.value;
+          // Realiza el proceso de guardado aquí
+          console.log('Correo a guardar:', valorAGuardar);
+          is_input = true;
+        }
+      } else {
+        // Si no es un correo válido, verifica si se ha seleccionado una opción en el select
+        if (nuevoSelect.options.selectedIndex !== -1) {
+          valorAGuardar = nuevoSelect.options[nuevoSelect.selectedIndex].text;
+          // Realiza el proceso de guardado aquí
+          console.log('Valor a guardar:', valorAGuardar);
+        }
+      }
+
     if(atencion === '' || atencion === undefined){
         appControl.cerrarLoading();
         Swal.fire('', 'El campo de atencion no puede estar vacio', 'warning');
@@ -401,13 +529,13 @@ async function guardarDatos() {
     appControl.cerrarLoading();
     Swal.fire('', response.message, response.type);
     if( response.type != 'error' && response.type != undefined ){
-        // location.reload();
+        location.reload();
     }
         // Hacer una solicitud AJAX para generar el PDF y mostrarlo
     // $.get('/generate-pdf', function (data) {
     //     mostrarPDF(data.pdf);
     // });
-    getpdf(response.cotizacion_id);
+    // getpdf(response.cotizacion_id);
 }
 
 

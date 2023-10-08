@@ -32,6 +32,8 @@
     <input type="hidden" value="{{ route('clientes.cotizacion') }}" id="url_get_clients">
     <input type="hidden" value="{{ route('cotizaciones.details') }}" id="url_get_details">
     <input type="hidden" value="{{ route('cotizaciones.pdf') }}" id="url_get_pdf">
+    <input type="hidden" value="{{ route('cotizaciones.email') }}" id="url_get_client_email">
+
 
     {{-- cotizaciones.pdf --}}
     <input type="hidden" value="{{ json_encode($cotizacion_id) }}" id="cotizacion_data">
