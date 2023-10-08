@@ -64,7 +64,14 @@
                 </button>
             </td>
             <td class="px-6 py-4 whitespace-no-wrap">
-                <a href="#" class="inline-flex items-center px-4 py-2 bg-red-600 border border-transparent rounded-md font-semibold text-xs text-white uppercase tracking-widest hover:bg-red-500 active:bg-red-700 focus:outline-none focus:ring-2 focus:ring-red-500 focus:ring-offset-2 dark:focus:ring-offset-gray-800 transition ease-in-out duration-150">Enviar PDF</a>
+                <button
+                data-url= "{{ route('cotizaciones.sendEmail') }}"
+                data-cotizacion_id = "{{ $cotizacion->cotizacion_id }}"
+                onclick="sendCotizacionPdf(this)"
+                title="Envia la cotizacion {{ $cotizacion->cotizacion_id }} por correo"
+                class="inline-flex items-center px-4 py-2 bg-red-600 border border-transparent rounded-md font-semibold text-xs text-white uppercase tracking-widest hover:bg-red-500 active:bg-red-700 focus:outline-none focus:ring-2 focus:ring-red-500 focus:ring-offset-2 dark:focus:ring-offset-gray-800 transition ease-in-out duration-150">
+                Enviar PDF
+                </button>
             </td>
         </tr>
         @endforeach

@@ -28,16 +28,16 @@ class CotizacionesController extends Controller
     ';
     public function index()
     {
-        try {
-            // $this->send_mail('ONE MFG', 'pahr9894.kf@gmail.com', 2);
-            // $this->enviarCorreoConPDF(2);
-            $explosion = new CotizacionesEmailJob();
-            $explosion->setCotizacionIdParam(2); // saptopit WO
-            dispatch($explosion);
+        // try {
+        //     // $this->send_mail('ONE MFG', 'pahr9894.kf@gmail.com', 2);
+        //     // $this->enviarCorreoConPDF(2);
+        //     // $explosion = new CotizacionesEmailJob();
+        //     // $explosion->setCotizacionIdParam(2); // saptopit WO
+        //     // dispatch($explosion);
 
-        } catch (\Exception $e) {
-            dd($e);
-        }
+        // } catch (\Exception $e) {
+        //     dd($e);
+        // }
         $company_id = $this->getSessionCompanyId();
         $cotizaciones = $this->getCotizacions();
         $userId = auth()->id();
@@ -188,16 +188,19 @@ class CotizacionesController extends Controller
     }
 
     public function enviarPDFPorCorreo(Request $request)
-{
-    // Generar el PDF como se mencionó anteriormente
+    {
+        // // Generar el PDF como se mencionó anteriormente
 
-    // Enviar el PDF como adjunto por correo
-    $pdfContent = $pdf->output();
+        // // Enviar el PDF como adjunto por correo
+        // $pdfContent = $pdf->output();
 
-    Mail::to('pahr9894.kf@gmail.com')->send(new EnviarCotizacionesMailable($pdfContent));
-
-    return response()->json(['message' => 'PDF enviado por correo']);
-}
+        // Mail::to('pahr9894.kf@gmail.com')->send(new EnviarCotizacionesMailable($pdfContent));
+        $explosion = new CotizacionesEmailJob();
+        $explosion->setCotizacionIdParam($request->cotizacion_id);
+        $explosion->setCorreoParam($request->correo);
+        dispatch($explosion);
+        return response()->json(['message' => 'PDF enviado por correo', 'type' => 'success']);
+    }
 
 
 public function generarPDFyEnviarCorreo()

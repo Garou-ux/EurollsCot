@@ -80,6 +80,7 @@ Route::post('/cotizaciones/update', [CotizacionesController::class, 'update'])->
 Route::post('cotizaciones/pdf', [CotizacionesController::class, 'getCotizacionPDF'])->middleware(['auth', 'verified'])->name('cotizaciones.pdf');
 Route::post('cotizaciones/options', [CotizacionesController::class, 'cotizacionesOptions'])->middleware(['auth', 'verified'])->name('cotizaciones.options');
 Route::post('cotizaciones/emails', [CotizacionesController::class, 'cotizacionesEmail'])->middleware(['auth', 'verified'])->name('cotizaciones.email');
+Route::post('cotizaciones/enviarPDFPorCorreo', [CotizacionesController::class,'enviarPDFPorCorreo'])->name('cotizaciones.sendEmail');
 
 #clientes
 Route::get('clientes', [ClientesController::class, 'index'])->middleware(['auth', 'verified'])->name('clientes.index');

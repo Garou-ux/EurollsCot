@@ -25,6 +25,7 @@ class CotizacionesEmailJob implements ShouldQueue
      * @return void
      */
     protected $cotizacion_id;
+    protected $correo;
     public function __construct()
     {
         //
@@ -32,6 +33,10 @@ class CotizacionesEmailJob implements ShouldQueue
 
     public function setCotizacionIdParam( $cotizacion_id ){
         $this->cotizacion_id = $cotizacion_id;
+    }
+
+    public function setCorreoParam( $correo ){
+        $this->correo = $correo;
     }
 
     /**
@@ -122,7 +127,7 @@ class CotizacionesEmailJob implements ShouldQueue
             // Obtiene el contenido del PDF como una cadena de bytes
             $pdfContent = $dompdf->output();
             Mail::raw('Contenido del correo', function ($message) use ($pdfPath,$pdfContent) {
-                $message->to('pahr9894.kf@gmail.com')
+                $message->to($this->correo)
                     ->subject('Asunto del correo')
                     ->attach($pdfContent, [
                         'as' => 'documento.pdf', // Nombre del archivo adjunto
