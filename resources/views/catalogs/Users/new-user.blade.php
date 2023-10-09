@@ -8,7 +8,7 @@
         <div class="mx-auto max-w-7xl px-4 py-24 sm:px-6 sm:py-32 lg:px-8">
           <div class="mx-auto max-w-2xl">
 
-      <form method="POST" action="{{ route('users.store') }}">
+      <form method="POST" data-action="{{ route('users.storeds') }}" id="formUser">
         <div class="space-y-12">
           <div class="border-b border-gray-900/10 pb-12">
             <h2 class="text-base font-semibold leading-7 text-gray-900">Nuevo Perfil</h2>
@@ -126,4 +126,55 @@
           </div>
         </div>
       </div>
+
+      <script>
+appControl = appModule;
+document.getElementById('formUser').addEventListener('submit', async function (e) {
+        e.preventDefault(); // Evitar que el formulario se envíe de forma tradicional
+        appControl.mostrarLoading();
+        const form = e.target;
+        const url = form.dataset.action;
+        console.log(url);
+        let data = appControl.serializeForm('formUser');
+        data.url = url
+        console.log(data);
+        console.log(form.dataset.action);
+        let response = await appControl.saveForm(data);
+        console.log(response);
+        if( response.type === undefined){
+            appControl.cerrarLoading();
+            for (const key in response.errors) {
+                console.log(response);
+                if (response.errors.hasOwnProperty(key)) {
+                    const messages = response.errors[key];
+                    // Itera a través de los mensajes de error
+                    for (const message of messages) {
+                        Swal.fire(`Campo: ${key}`, `Mensaje de error: ${message}`, 'warning');
+                    }
+                }
+            }
+            return;
+        }
+
+        // .then(response => response.json()) // Supongo que la respuesta es JSON, ajusta según tu caso
+        // .then(data => {
+        //     // Aquí puedes mostrar la respuesta utilizando SweetAlert2
+        //     console.log(data);
+        //     Swal.fire({
+        //         title: 'Respuesta del servidor',
+        //         text: data.message, // Ajusta la propiedad de acuerdo a la estructura de tu respuesta
+        //         icon: 'success' // Puedes ajustar el icono según tu preferencia
+        //     });
+        // })
+        // .catch(error => {
+        //     // En caso de error
+        //     console.error('Error:', error);
+        //     Swal.fire({
+        //         title: 'Error',
+        //         text: 'Hubo un error al procesar la solicitud',
+        //         icon: 'error'
+        //     });
+        // });
+    });
+      </script>
 </x-app-layout>

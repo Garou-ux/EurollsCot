@@ -2,8 +2,14 @@
 
 namespace App\Http\Controllers;
 use App\Models\User;
-
+use App\Providers\RouteServiceProvider;
+use Illuminate\Auth\Events\Registered;
+use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Hash;
+use Illuminate\Validation\Rules;
+use Illuminate\View\View;
 
 class UserController extends Controller
 {
@@ -15,17 +21,11 @@ class UserController extends Controller
     }
     public function create()
     {
-        return view('Catalogs.Users.new-user');
+        return view('catalogs.Users.new-user');
     }
 
-    // public function store(Request $request)
-    // {
-    //     // Aquí puedes agregar la lógica para almacenar el nuevo usuario
-    //     // Utiliza $request->input() para obtener los datos del formulario
-    //     // y luego crea un nuevo registro en la base de datos.
-    //     return redirect()->route('users.index')->with('success', 'User created successfully');
-    // }
-    public function store(Request $request): RedirectResponse
+
+    public function storeds(Request $request)
     {
         $request->validate([
             'name' => ['required', 'string', 'max:255'],
@@ -55,13 +55,7 @@ class UserController extends Controller
             'rol_id' => $request->rol_id
         ]);
 
-        event(new Registered($user));
-
-        // Auth::login($user);
-
-        // return redirect(RouteServiceProvider::HOME);
-        return redirect()->route('users.index')->with('success', 'User created successfully');
-
+        return response()->json([ 'user' => $user, 'message' => 'success', 'type' => 'success' ]);
     }
     public function edit(User $user)
     {

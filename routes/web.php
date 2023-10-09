@@ -47,7 +47,7 @@ Route::middleware('auth')->group(function () {
 Route::get('/catalogos',[CatalogosController::class, 'list'])->middleware(['auth', 'verified'])->name('catalogos.list');
 Route::get('/users', [UserController::class, 'index'])->middleware(['auth', 'verified'])->name('users.index');
 Route::get('/users/create', [UserController::class, 'create'])->middleware(['auth', 'verified'])->name('users.create');
-Route::post('/users', [UserController::class, 'store'])->middleware(['auth', 'verified'])->name('users.store');
+Route::post('/users/storeds', [UserController::class, 'storeds'])->middleware(['auth', 'verified'])->name('users.storeds');
 Route::get('/users/{user}/edit', [UserController::class, 'edit'])->middleware(['auth', 'verified'])->name('users.edit');
 Route::put('/users/{user}', [UserController::class, 'update'])->middleware(['auth', 'verified'])->name('users.update');
 
