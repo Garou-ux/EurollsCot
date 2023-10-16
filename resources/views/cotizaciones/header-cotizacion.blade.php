@@ -32,7 +32,7 @@
        <p>Valle alto 203 Col. Valle del Mezquital</p>
        <p>Apodaca N.L. C.P.66632</p>
        <p>tel.-+52(81)13-64-32-30 & 83-14-06-14</p>
-       <p>H. Alejandro Badillo</p>
+       <p>{{  $user->name  }}</p>
       </div>
       {{-- fin datos empresa --}}
       <div class="text-sm font-light text-slate-500">

@@ -12,7 +12,8 @@ class ClientesController extends Controller
 
     public function index()
     {
-        $clientes = Cliente::all();
+        $company_id = intval($this->getSessionCompanyId());
+        $clientes = Cliente::where('company_id', $company_id)->get();
         $image_not_found = asset('assets/onemfg_logo.png') ;
         return view('catalogs.Clientes.list', compact('clientes', 'image_not_found'));
     }
@@ -20,6 +21,8 @@ class ClientesController extends Controller
     public function store(Request $request)
     {
         try {
+            $company_id = $this->getSessionCompanyId();
+            $userId = $this->getSessionUserId();
             $request->validate([
                 'nombre' => 'required|string|max:255',
                 'direccion' => 'required|string|max:255',
@@ -28,14 +31,15 @@ class ClientesController extends Controller
                 'telefono' => 'required|numeric|min:0',
                 //'file-upload' => 'required|image|mimes:jpeg,png,jpg,gif|max:2048',
             ]);
-
             if( $request->clienteId <= 0 ){
                 $cliente = Cliente::create([
-                    'nombre' => $request->input('nombre'),
-                    'direccion' => $request->input('direccion'),
-                    'codigo_postal' => $request->input('codigo_postal'),
-                    'correo' => $request->input('correo'),
-                    'telefono' => $request->input('telefono')
+                    'nombre' => $request->nombre,
+                    'direccion' => $request->direccion,
+                    'codigo_postal' => $request->codigo_postal,
+                    'correo' => $request->correo,
+                    'telefono' => $request->telefono,
+                    'company_id' => $company_id,
+                    'created_by' => $userId
                 ]);
                 $this->storeClientImage($cliente, $request);
                 $this->saveClienteEmail($cliente->id, $cliente->correo);
@@ -47,6 +51,8 @@ class ClientesController extends Controller
                 $cliente->codigo_postal = $request->codigo_postal;
                 $cliente->correo = $request->correo;
                 $cliente->telefono = $request->telefono;
+                $cliente->company_id = $company_id;
+                $cliente->created_by = $userId;
                 $cliente->save();
                 $this->storeClientImage($cliente, $request);
                 $this->saveClienteEmail($cliente->id, $cliente->correo);
@@ -82,7 +88,8 @@ class ClientesController extends Controller
     }
 
     public function getclientesforcotizacion(){
-        return Cliente::all();
+        $company_id = intval($this->getSessionCompanyId());
+        return Cliente::where('company_id', $company_id)->get();
     }
 
     public function saveClienteEmail( $cliente_id, $correo ){
@@ -94,5 +101,15 @@ class ClientesController extends Controller
             'correo' => $correo
         ]);
         return $clienteEmail;
+    }
+
+    public function getSessionCompanyId(){
+        $company_id = session('opcion_seleccionada');
+        return $company_id;
+    }
+
+    public function getSessionUserId(){
+        $userId = auth()->id();
+        return $userId;
     }
 }

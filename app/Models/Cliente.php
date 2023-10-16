@@ -21,6 +21,8 @@ class Cliente extends Model
         'image_path',
         'correo',
         'deleted_by',
+        'company_id',
+        'telefono',
         'created_at',
         'updated_at',
         'deleted_at'

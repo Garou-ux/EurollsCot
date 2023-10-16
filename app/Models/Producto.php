@@ -17,6 +17,7 @@ class Producto extends Model
         'descripcion',
         'precio',
         'deleted_by',
+        'company_id',
         'image_path',
         'created_at',
         'updated_at',

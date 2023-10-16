@@ -14,12 +14,13 @@ class ProductsController extends Controller
     {
         $products = Producto::all();
         $image_not_found = asset('assets/onemfg_logo.png') ;
-        return view('Catalogs.Products.list', compact('products', 'image_not_found'));
+        return view('catalogs.Products.list', compact('products', 'image_not_found'));
     }
 
     public function store(Request $request)
     {
         try {
+            $company_id = intval($this->getSessionCompanyId());
             $request->validate([
                 'clave' => 'required|string|max:255',
                 'descripcion' => 'required|string|max:255',
@@ -32,6 +33,7 @@ class ProductsController extends Controller
                     'clave' => $request->input('clave'),
                     'descripcion' => $request->input('descripcion'),
                     'precio' => $request->input('precio'),
+                    'company_id' => $company_id
                 ]);
                 $this->storeProductImage($producto, $request);
                 return response()->json(['message' => 'Producto creado con éxito', "type" => 'success'], 200);
@@ -40,6 +42,7 @@ class ProductsController extends Controller
                 $producto->clave = $request->clave;
                 $producto->descripcion = $request->descripcion;
                 $producto->precio = $request->precio;
+                $producto->company_id = $company_id;
                 $producto->save();
                 $this->storeProductImage($producto, $request);
                 return response()->json(['message' => 'Producto actualizado con éxito',  "type" => 'success'], 200);
@@ -80,6 +83,16 @@ class ProductsController extends Controller
             "clave"
         ])->get();
         return $products;
+    }
+
+    public function getSessionCompanyId(){
+        $company_id = session('opcion_seleccionada');
+        return $company_id;
+    }
+
+    public function getSessionUserId(){
+        $userId = auth()->id();
+        return $userId;
     }
 
 }

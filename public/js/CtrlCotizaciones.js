@@ -351,6 +351,17 @@ document.addEventListener('DOMContentLoaded', async function() {
 
         }
     });
+
+    var changeEvent = new Event("change", {
+        bubbles: true, // Permite que el evento burbujee
+        cancelable: true, // Permite que el evento sea cancelable
+      });
+
+    setTimeout(() => {
+        var selectElement = document.getElementById("selectPicker");
+        selectElement.dispatchEvent(changeEvent);
+        console.log('aaa')
+    }, 1000);
 });
 
 

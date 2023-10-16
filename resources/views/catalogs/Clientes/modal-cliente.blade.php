@@ -8,7 +8,7 @@
                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path>
             </svg>
         </button>
-        <h2 class="text-xl font-semibold mb-4">Crear Producto</h2>
+        <h2 class="text-xl font-semibold mb-4">Crear Cliente</h2>
         <form id="createForm" enctype="multipart/form-data">
             @csrf
             <div class="mb-4">
@@ -50,7 +50,7 @@
                 <input type="text" name="codigo_postal" id="codigo_postal" class="w-full rounded border-gray-300 focus:border-blue-500 focus:ring-blue-500" required>
             </div>
             <div class="mb-4">
-                <label for="precio" class="block text-gray-800 font-semibold">Telefono</label>
+                <label for="telefono" class="block text-gray-800 font-semibold">Telefono</label>
                 <input type="number"  name="telefono" id="telefono" class="w-full rounded border-gray-300 focus:border-blue-500 focus:ring-blue-500" required>
             </div>
             <button type="button"  onclick="saveEditClient( this )"  class="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded">Guardar</button>

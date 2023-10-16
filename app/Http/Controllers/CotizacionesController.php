@@ -5,6 +5,7 @@ use App\Models\Cotizacion;
 use App\Models\CotizacionDetail;
 use App\Models\Company;
 use App\Models\ClientesEmail;
+use App\Models\User;
 use Illuminate\Support\Facades\Validator;
 use App\Http\Requests\CotizacionRequest;
 use Illuminate\Support\Facades\Mail;
@@ -28,30 +29,21 @@ class CotizacionesController extends Controller
     ';
     public function index()
     {
-        // try {
-        //     // $this->send_mail('ONE MFG', 'pahr9894.kf@gmail.com', 2);
-        //     // $this->enviarCorreoConPDF(2);
-        //     // $explosion = new CotizacionesEmailJob();
-        //     // $explosion->setCotizacionIdParam(2); // saptopit WO
-        //     // dispatch($explosion);
-
-        // } catch (\Exception $e) {
-        //     dd($e);
-        // }
         $company_id = $this->getSessionCompanyId();
         $cotizaciones = $this->getCotizacions();
         $userId = auth()->id();
-        // dd($userId);
-        return view('cotizaciones.index', compact('cotizaciones', 'company_id'));
+        $user = User::find($userId);
+        return view('cotizaciones.index', compact('cotizaciones', 'company_id', 'user'));
     }
 
 
     #vista para crear la cotizacion
     public function create()
     {
-        $company_id = $this->getSessionCompanyId();
-
-        return view('cotizaciones.new-cotizacion', compact('company_id'));
+        $company_id = intval($this->getSessionCompanyId());
+        $userId = auth()->id();
+        $user = User::find($userId);
+        return view('cotizaciones.new-cotizacion', compact('company_id', 'user'));
     }
 
     public function getCotizacions(){
@@ -319,7 +311,10 @@ public function getCotizacionPDF( Request $request ){
 
 public function indexEdit( Cotizacion $cotizacion_id )
 {
-    return view('cotizaciones.indexEdit', compact('cotizacion_id'));
+    $company_id = $this->getSessionCompanyId();
+    $userId = auth()->id();
+    $user = User::find($userId);
+    return view('cotizaciones.indexEdit', compact('cotizacion_id', 'company_id', 'user'));
 }
 
 public function getCotizacionDetails( Request $request ){
@@ -387,8 +382,10 @@ foreach ($requestDetails as $detail) {
             $cliController = new ClientesController;
             $cliController->saveClienteEmail($request->cliente_id, $request->correo);
         }
+        $url = route('cotizaciones.list');
+
         DB::commit();
-        return response()->json([ 'cotizacion_id' => $cotizacionHeader->id, 'message' => 'Cotizacion creada con éxito',  "type" => 'success'], 201);
+        return response()->json([ 'cotizacion_id' => $cotizacionHeader->id, 'message' => 'Cotizacion creada con éxito',  "type" => 'success', 'url' => $url], 201);
       } catch (\Exception $e) {
         DB::rollback();
         return response()->json(['message' => 'Error en => '.$e->getMessage(),  "type" => 'error'], 400);

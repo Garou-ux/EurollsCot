@@ -154,6 +154,7 @@ document.addEventListener('DOMContentLoaded', async function() {
     selectPicker.addEventListener('change', async function () {
         const selectedOption = this.options[this.selectedIndex];
             if (selectedOption) {
+                changeClient = true;
                 // Actualiza el contenido de los elementos <p> con los valores del dataset
                 direccionCli.textContent = selectedOption.dataset.direccion || '';
                 emailCli.textContent = selectedOption.dataset.correo || '';
@@ -212,6 +213,16 @@ document.addEventListener('DOMContentLoaded', async function() {
             }
     });
     appControl.cerrarLoading();
+    var changeEvent = new Event("change", {
+        bubbles: true, // Permite que el evento burbujee
+        cancelable: true, // Permite que el evento sea cancelable
+      });
+
+    setTimeout(() => {
+        var selectElement = document.getElementById("selectPicker");
+        selectElement.dispatchEvent(changeEvent);
+        console.log('aaa')
+    }, 1000);
 });
 
 
@@ -435,6 +446,10 @@ guardarBtn.addEventListener('click', guardarDatos);
 async function guardarDatos() {
     const dataToSend = [];
     appControl.mostrarLoading();
+    if(!changeClient){
+        appControl.cerrarLoading();
+        Swal.fire('', 'Selecciona un cliente', 'warning');
+     }
 
     // Recorre cada fila de la tabla y recopila los datos
     productos.forEach((rowData) => {
@@ -531,7 +546,9 @@ async function guardarDatos() {
     appControl.cerrarLoading();
     Swal.fire('', response.message, response.type);
     if( response.type != 'error' && response.type != undefined ){
-        location.reload();
+        let url = response.url; // Asume que response contiene la respuesta JSON
+        window.location.href = url;
+        // location.reload();
     }
         // Hacer una solicitud AJAX para generar el PDF y mostrarlo
     // $.get('/generate-pdf', function (data) {
