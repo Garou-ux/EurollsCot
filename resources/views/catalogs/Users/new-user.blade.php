@@ -103,14 +103,36 @@
           </div>
 
           <div class="border-b border-gray-900/10 pb-12">
+            <h2 class="text-base font-semibold leading-7 text-gray-900">Acceso</h2>
+            <p class="mt-1 text-sm leading-6 text-gray-600"></p>
+
+            <div class="mt-10 grid grid-cols-1 gap-x-6 gap-y-8 sm:grid-cols-6">
+              <div class="sm:col-span-3">
+                <label for="password" class="block text-sm font-medium leading-6 text-gray-900">Contraseña</label>
+                <div class="mt-2">
+                  <input type="password" name="password" id="password" autocomplete="given-name" class="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6">
+                </div>
+              </div>
+
+              <div class="sm:col-span-3">
+                <label for="password_confirmation" class="block text-sm font-medium leading-6 text-gray-900">Confirmar Contraseña</label>
+                <div class="mt-2">
+                  <input type="password" name="password_confirmation" id="password_confirmation" autocomplete="family-name" class="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6">
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <div class="border-b border-gray-900/10 pb-12">
             <h2 class="text-base font-semibold leading-7 text-gray-900">Rol</h2>
             <p class="mt-1 text-sm leading-6 text-gray-600">Elige el rol del usuario</p>
 
                 <div class="sm:col-span-3">
                     <div class="mt-2">
-                    <select id="country" name="country" autocomplete="country-name" class="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:max-w-xs sm:text-sm sm:leading-6">
+                    <select id="rol_id" name="rol_id" autocomplete="rol_id" class="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:max-w-xs sm:text-sm sm:leading-6">
                         <option value="1">Administrador Completo</option>
                         <option value="2">Administrativo</option>
+                        <option value="3">Vendedor</option>
                     </select>
                     </div>
               </div>
@@ -137,44 +159,31 @@ document.getElementById('formUser').addEventListener('submit', async function (e
         console.log(url);
         let data = appControl.serializeForm('formUser');
         data.url = url
-        console.log(data);
-        console.log(form.dataset.action);
         let response = await appControl.saveForm(data);
-        console.log(response);
         if( response.type === undefined){
             appControl.cerrarLoading();
-            for (const key in response.errors) {
-                console.log(response);
-                if (response.errors.hasOwnProperty(key)) {
-                    const messages = response.errors[key];
-                    // Itera a través de los mensajes de error
-                    for (const message of messages) {
-                        Swal.fire(`Campo: ${key}`, `Mensaje de error: ${message}`, 'warning');
-                    }
-                }
-            }
+            printErrorMsg(response.errors);
             return;
         }
+        Swal.fire('', response.message, response.type);
+        if(response.message === 'success'){
+            location.reload();
+        }
 
-        // .then(response => response.json()) // Supongo que la respuesta es JSON, ajusta según tu caso
-        // .then(data => {
-        //     // Aquí puedes mostrar la respuesta utilizando SweetAlert2
-        //     console.log(data);
-        //     Swal.fire({
-        //         title: 'Respuesta del servidor',
-        //         text: data.message, // Ajusta la propiedad de acuerdo a la estructura de tu respuesta
-        //         icon: 'success' // Puedes ajustar el icono según tu preferencia
-        //     });
-        // })
-        // .catch(error => {
-        //     // En caso de error
-        //     console.error('Error:', error);
-        //     Swal.fire({
-        //         title: 'Error',
-        //         text: 'Hubo un error al procesar la solicitud',
-        //         icon: 'error'
-        //     });
-        // });
+
     });
+    const printErrorMsg = (msg) => {
+       $(".alert-request").html('');
+       $(".alert-request").css('display','block');
+       console.log(msg);
+       $.each( msg, function( key, value ) {
+           $("[for="+key+"]").append(`<small style="background-color:coral; margin-left:18px;"  class='alert-request text-orange-950'>${value}<small>`);
+       });
+   }
+
+   const clearErrorMsg = () => {
+       $(".alert-request").html('');
+       $(".alert-request").css('display','none');
+   }
       </script>
 </x-app-layout>

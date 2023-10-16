@@ -27,35 +27,38 @@ class UserController extends Controller
 
     public function storeds(Request $request)
     {
-        $request->validate([
-            'name' => ['required', 'string', 'max:255'],
-            'email' => ['required', 'string', 'email', 'max:255', 'unique:'.User::class],
-            'password' => ['required', 'confirmed', Rules\Password::defaults()],
-            'paternal_surname' => ['required', 'string', 'max:50'],
-            'mother_surname' => ['required', 'string', 'max:50'],
-            'address' => ['required', 'string', 'max:50'],
-            'city' => ['required', 'string', 'max:20'],
-            'state' => ['required', 'string', 'max:15'],
-            'postal_code' => ['required', 'integer', 'max:10'],
-            'rol_id' => ['required', 'integer', 'max:5'],
+        try {
+            $request->validate([
+                'name' => ['required', 'string', 'max:255'],
+                'email' => ['required', 'string', 'email', 'max:255', 'unique:'.User::class],
+                'password' => ['required', 'confirmed', Rules\Password::defaults()],
+                'paternal_surname' => ['required', 'string', 'max:50'],
+                'mother_surname' => ['required', 'string', 'max:50'],
+                'address' => ['required', 'string', 'max:50'],
+                'city' => ['required', 'string', 'max:20'],
+                'state' => ['required', 'string', 'max:15'],
+                'postal_code' => ['required', 'max:10'],
+                'rol_id' => ['required', 'max:5'],
+            ]);
 
-        ]);
+            $user = User::create([
+                'name' => $request->name,
+                'email' => $request->email,
+                'password' => Hash::make($request->password),
+                'paternal_surname' => $request->paternal_surname,
+                'mother_surname' => $request->mother_surname,
+                'address' => $request->address,
+                'city' => $request->city,
+                'state' => $request->state,
+                'postal_code' => $request->postal_code,
+                'img_path' => null,
+                'rol_id' => $request->rol_id
+            ]);
 
-        $user = User::create([
-            'name' => $request->name,
-            'email' => $request->email,
-            'password' => Hash::make($request->password),
-            'paternal_surname' => $request->paternal_surname,
-            'mother_surname' => $request->mother_surname,
-            'address' => $request->address,
-            'city' => $request->city,
-            'state' => $request->state,
-            'postal_code' => $postal_code,
-            'img_path' => null,
-            'rol_id' => $request->rol_id
-        ]);
-
-        return response()->json([ 'user' => $user, 'message' => 'success', 'type' => 'success' ]);
+            return response()->json([ 'user' => $user, 'message' => 'success', 'type' => 'success' ]);
+        } catch (\Exception $e) {
+            return response()->json([ 'message' => $e->getMessage() , 'type' => 'error', 'line' => $e->getLine() ]);
+        }
     }
     public function edit(User $user)
     {
