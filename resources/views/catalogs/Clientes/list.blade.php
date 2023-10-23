@@ -19,12 +19,7 @@
             <br></br>
             <div class="div"></div>
         </div>
-        {{-- <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4"> --}}
-                {{-- @foreach ($clientes as $cliente) --}}
-                    @include('catalogs.Clientes.card-cliente')
-                {{-- @endforeach --}}
-
-        {{-- </div> --}}
+            @include('catalogs.Clientes.card-cliente')
     </div>
     @include('catalogs.Clientes.modal-cliente')
     <input type="hidden" value="{{ route('clientes.store') }}" id="url_store_cliente">

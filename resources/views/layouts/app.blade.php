@@ -49,6 +49,9 @@
     </head>
     <body class="font-sans antialiased">
         <div class="min-h-screen bg-gray-100">
+            @php
+
+            @endphp
             @include('layouts.navigation')
 
             <!-- Page Heading -->
@@ -113,6 +116,7 @@
                 .then(data => {
                     if (data.success) {
                         modal.classList.add("hidden"); // Cerrar el modal después de seleccionar
+                        location.reload();
                     }
                 })
                 .catch(error => {

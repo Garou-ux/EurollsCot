@@ -12,9 +12,14 @@ class ProductsController extends Controller
 
     public function index()
     {
-        $products = Producto::all();
+        $company_id = intval($this->getSessionCompanyId());
+        $products = Producto::where('company_id', $company_id)->get();
+        if ( intval(auth()->user()->rol_id) == 1 )
+        {
+            $products = Producto::get();
+        }
         $image_not_found = asset('assets/onemfg_logo.png') ;
-        return view('catalogs.Products.list', compact('products', 'image_not_found'));
+        return view('catalogs.Products.list', compact('products', 'image_not_found', 'company_id'));
     }
 
     public function store(Request $request)
@@ -22,11 +27,14 @@ class ProductsController extends Controller
         try {
             $company_id = intval($this->getSessionCompanyId());
             $request->validate([
-                'clave' => 'required|string|max:255',
-                'descripcion' => 'required|string|max:255',
+                'clave' => 'required|string|max:10',
+                'descripcion' => 'required|string|max:200',
                 'precio' => 'required|numeric|min:0',
                 //'file-upload' => 'required|image|mimes:jpeg,png,jpg,gif|max:2048',
             ]);
+            if( isset($request->company_id) ){
+                $company_id = $request->company_id;
+            }
 
             if( $request->productid <= 0 ){
                 $producto = Producto::create([
@@ -78,10 +86,14 @@ class ProductsController extends Controller
     }
 
     public function getproductsforcotizacion(){
+
+        $company_id = intval($this->getSessionCompanyId());
         $products = Producto::select([
             "id as producto_id",
             "clave"
-        ])->get();
+        ])
+        ->where('company_id', $company_id)
+        ->get();
         return $products;
     }
 

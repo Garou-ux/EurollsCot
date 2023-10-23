@@ -1,5 +1,6 @@
 <?php
 
+use App\Models\User;
 use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\CatalogosController;
 use App\Http\Controllers\UserController;
@@ -26,11 +27,17 @@ use Illuminate\Support\Facades\Route;
 // });
 
 Route::get('/', function () {
-    return view('dashboard');
+    $userId = auth()->id();
+    $user = User::find($userId);
+    // dd($user, 'aaa');
+    return view('dashboard')->with('user', $user);
 })->middleware(['auth', 'verified'])->name('dashboard');
 
 Route::get('/dashboard', function () {
-    return view('dashboard');
+    $userId = auth()->id();
+    $user = User::find($userId);
+    // dd($user, 'mmm');
+    return view('dashboard')->with('user', $user);
 })->middleware(['auth', 'verified']);
 
 Route::middleware('auth')->group(function () {

@@ -3,7 +3,10 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    @vite(['resources/css/app.css', 'resources/js/app.js'])
+    <style>
+        @import url('https://cdn.tailwindcss.com/3.1.0/tailwind.min.css');
+    </style>
+
 </head>
 
 <body class="font-sans antialiased">
@@ -16,7 +19,13 @@
                 <div class="bg-[white] rounded-b-md">
                 <div class="p-9">
                     <div class="space-y-6 text-slate-700">
-                        <x-application-logo class="block h-9 w-auto fill-current text-gray-800 dark:text-gray-200" />
+                        <div class="block h-9 w-auto fill-current text-gray-800 dark:text-gray-200" >
+                            @if ($company_id === 1)
+                                <img src="{{ asset('assets/onemfg_logo.png') }}" alt="Logo" class="w-16 h-16 rounded">
+                            @else
+                                <img src="{{ asset('assets/prescition.png') }}" alt="Logo" class="w-18 h-16 rounded">
+                            @endif
+                        </div>
 
                     <p class="text-xl font-extrabold tracking-tight uppercase font-body" style="font-size: 1.25rem; font-weight: 800; letter-spacing: 0.025em;">
                         {{-- One Mfg Cotización #  --}}

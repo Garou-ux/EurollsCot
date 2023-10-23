@@ -4,7 +4,10 @@
             {{ __('Listado de Catalogos') }}
         </h2>
     </x-slot>
-
+        @php
+            $company_id = session('opcion_seleccionada');
+            $user = auth()->user();
+        @endphp
         <div class="bg-gray-100">
             <div class="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
             <div class="mx-auto max-w-2xl py-16 sm:py-24 lg:max-w-none lg:py-32">
@@ -27,6 +30,8 @@
                     </h3>
                     <p class="text-base font-semibold text-gray-900">Crea y Edita Productos</p>
                 </div>
+                @if ( intval($user->rol_id) == 1  )
+
                 <div class="group relative">
                     <div class="relative h-80 w-full overflow-hidden rounded-lg bg-white sm:aspect-h-1 sm:aspect-w-2 lg:aspect-h-1 lg:aspect-w-1 group-hover:opacity-75 sm:h-64">
                     <img src="https://tailwindui.com/img/ecommerce-images/home-page-02-edition-02.jpg" alt="Wood table with porcelain mug, leather journal, brass pen, leather key ring, and a houseplant." class="h-full w-full object-cover object-center">
@@ -39,6 +44,7 @@
                     </h3>
                     <p class="text-base font-semibold text-gray-900">Crea y Edita Usuarios</p>
                 </div>
+                @endif
                 <div class="group relative">
                     <div class="relative h-80 w-full overflow-hidden rounded-lg bg-white sm:aspect-h-1 sm:aspect-w-2 lg:aspect-h-1 lg:aspect-w-1 group-hover:opacity-75 sm:h-64">
                     <img

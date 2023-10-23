@@ -14,6 +14,10 @@ class ClientesController extends Controller
     {
         $company_id = intval($this->getSessionCompanyId());
         $clientes = Cliente::where('company_id', $company_id)->get();
+        if ( intval(auth()->user()->rol_id) == 1 )
+        {
+            $clientes = Cliente::get();
+        }
         $image_not_found = asset('assets/onemfg_logo.png') ;
         return view('catalogs.Clientes.list', compact('clientes', 'image_not_found'));
     }
@@ -23,6 +27,9 @@ class ClientesController extends Controller
         try {
             $company_id = $this->getSessionCompanyId();
             $userId = $this->getSessionUserId();
+            if( isset($request->company_id) ){
+                $company_id = $request->company_id;
+            }
             $request->validate([
                 'nombre' => 'required|string|max:255',
                 'direccion' => 'required|string|max:255',

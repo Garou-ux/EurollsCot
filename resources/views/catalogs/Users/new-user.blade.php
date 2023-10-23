@@ -124,18 +124,31 @@
           </div>
 
           <div class="border-b border-gray-900/10 pb-12">
-            <h2 class="text-base font-semibold leading-7 text-gray-900">Rol</h2>
-            <p class="mt-1 text-sm leading-6 text-gray-600">Elige el rol del usuario</p>
+            <h2 class="text-base font-semibold leading-7 text-gray-900">Rol de Usuario</h2>
+            <p class="mt-1 text-sm leading-6 text-gray-600"></p>
 
-                <div class="sm:col-span-3">
-                    <div class="mt-2">
+            <div class="mt-10 grid grid-cols-1 gap-x-6 gap-y-8 sm:grid-cols-6">
+              <div class="sm:col-span-3">
+                <label for="password" class="block text-sm font-medium leading-6 text-gray-900">Rol</label>
+                <div class="mt-2">
                     <select id="rol_id" name="rol_id" autocomplete="rol_id" class="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:max-w-xs sm:text-sm sm:leading-6">
                         <option value="1">Administrador Completo</option>
                         <option value="2">Administrativo</option>
                         <option value="3">Vendedor</option>
                     </select>
-                    </div>
+                </div>
               </div>
+
+              <div class="sm:col-span-3">
+                <label for="password_confirmation" class="block text-sm font-medium leading-6 text-gray-900">Empresa</label>
+                <div class="mt-2">
+                    <select id="company_id" name="company_id" autocomplete="company_id" class="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:max-w-xs sm:text-sm sm:leading-6">
+                        <option value="1">One MFG</option>
+                        <option value="2">Prescision Manufacturing</option>
+                      </select>
+                </div>
+              </div>
+            </div>
           </div>
         </div>
 

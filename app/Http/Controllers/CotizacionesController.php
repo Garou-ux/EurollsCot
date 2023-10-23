@@ -11,11 +11,12 @@ use App\Http\Requests\CotizacionRequest;
 use Illuminate\Support\Facades\Mail;
 use App\Jobs\CotizacionesEmailJob;
 use App\Http\Controllers\ClientesController;
-
+use Illuminate\Support\Facades\View;
 // use Mail;
 use DB;
 use PDF;
-use View;
+use Dompdf\Options;
+use Dompdf\Dompdf;
 
 
 use Illuminate\Http\Request;
@@ -188,7 +189,7 @@ class CotizacionesController extends Controller
 
         // Mail::to('pahr9894.kf@gmail.com')->send(new EnviarCotizacionesMailable($pdfContent));
         $explosion = new CotizacionesEmailJob();
-        $explosion->setCotizacionIdParam($request->cotizacion_id);
+        $explosion->setCotizacionIdParam($request->cotizacionId);
         $explosion->setCorreoParam($request->correo);
         dispatch($explosion);
         return response()->json(['message' => 'PDF enviado por correo', 'type' => 'success']);

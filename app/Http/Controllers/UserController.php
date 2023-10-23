@@ -10,37 +10,37 @@ use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Validation\Rules;
 use Illuminate\View\View;
+use Illuminate\Support\Facades\Validator;
+use App\Http\Requests\CreateUserRequest;
 
 class UserController extends Controller
 {
     //
     public function index()
     {
-        $users = User::all();
-        return view('Catalogs.Users.list', compact('users'));
+        $company_id = $this->getSessionCompanyId();
+        $users = User::get();
+        if ( intval(auth()->user()->rol_id) )
+        {
+            return redirect()->route('login');
+        }
+        return view('Catalogs.Users.list', compact('users', 'company_id'));
     }
     public function create()
     {
+        if ( intval(auth()->user()->rol_id) )
+        {
+            return redirect()->route('login');
+        }
         return view('catalogs.Users.new-user');
     }
 
 
-    public function storeds(Request $request)
+    public function storeds(CreateUserRequest $request)
     {
         try {
-            $request->validate([
-                'name' => ['required', 'string', 'max:255'],
-                'email' => ['required', 'string', 'email', 'max:255', 'unique:'.User::class],
-                'password' => ['required', 'confirmed', Rules\Password::defaults()],
-                'paternal_surname' => ['required', 'string', 'max:50'],
-                'mother_surname' => ['required', 'string', 'max:50'],
-                'address' => ['required', 'string', 'max:50'],
-                'city' => ['required', 'string', 'max:20'],
-                'state' => ['required', 'string', 'max:15'],
-                'postal_code' => ['required', 'max:10'],
-                'rol_id' => ['required', 'max:5'],
-            ]);
 
+            $company_id = $this->getSessionCompanyId();
             $user = User::create([
                 'name' => $request->name,
                 'email' => $request->email,
@@ -52,7 +52,8 @@ class UserController extends Controller
                 'state' => $request->state,
                 'postal_code' => $request->postal_code,
                 'img_path' => null,
-                'rol_id' => $request->rol_id
+                'rol_id' => $request->rol_id,
+                'company_id' => $company_id
             ]);
 
             return response()->json([ 'user' => $user, 'message' => 'success', 'type' => 'success' ]);
@@ -62,6 +63,10 @@ class UserController extends Controller
     }
     public function edit(User $user)
     {
+        if ( intval(auth()->user()->rol_id) )
+        {
+            return redirect()->route('login');
+        }
         return view('profile.edit', [
             'user' => $user,
         ]);
@@ -73,5 +78,16 @@ class UserController extends Controller
         // Utiliza $request->input() para obtener los datos del formulario
         // y luego actualiza el registro correspondiente en la base de datos.
         return redirect()->route('users.index')->with('success', 'User updated successfully');
+    }
+
+
+    public function getSessionCompanyId(){
+        $company_id = session('opcion_seleccionada');
+        return $company_id;
+    }
+
+    public function getSessionUserId(){
+        $userId = auth()->id();
+        return $userId;
     }
 }

@@ -31,7 +31,8 @@ class User extends Authenticatable
         'state',
         'postal_code',
         'img_path',
-        'rol_id'
+        'rol_id',
+        'company_id'
     ];
 
     /**

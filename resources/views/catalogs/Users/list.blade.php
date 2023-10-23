@@ -21,10 +21,13 @@
                         <thead>
                             <tr>
                                 <th class="px-6 py-3 bg-gray-50 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                                    {{ __('Name') }}
+                                    {{ __('Nombre') }}
                                 </th>
                                 <th class="px-6 py-3 bg-gray-50 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
                                     {{ __('Email') }}
+                                </th>
+                                <th class="px-6 py-3 bg-gray-50 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                                    {{ __('Empresa') }}
                                 </th>
                                 <th class="px-6 py-3 bg-gray-50"></th>
                             </tr>
@@ -37,6 +40,14 @@
                                     </td>
                                     <td class="px-6 py-4 whitespace-nowrap">
                                         {{ $user->email }}
+                                    </td>
+                                    <td class="px-6 py-4 whitespace-nowrap">
+                                        @if ( intval($user->company_id) == 1)
+                                            ONE MFG
+                                        @else
+                                            Prescicion Manufacturing
+                                        @endif
+                                        {{ $user->company }}
                                     </td>
                                     <td class="px-6 py-4 whitespace-nowrap text-right text-sm font-medium">
                                         <a

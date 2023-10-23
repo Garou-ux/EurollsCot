@@ -48,6 +48,7 @@
             const formData = new FormData(createForm);
             const productid = document.getElementById('productId').value;
             formData.append('productid', productid);
+            console.log(formData);
                 try {
                     const response = await fetch(url_store_product, {
                         method: 'POST',
