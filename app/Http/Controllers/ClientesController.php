@@ -31,7 +31,7 @@ class ClientesController extends Controller
                 $company_id = $request->company_id;
             }
             $request->validate([
-                'nombre' => 'required|string|max:255',
+                'nombre' => 'required|string|max:80',
                 'direccion' => 'required|string|max:255',
                 'codigo_postal' => 'required|numeric|min:0',
                 'correo' => 'required|string|max:50',

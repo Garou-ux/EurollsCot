@@ -15,20 +15,20 @@ use App\Http\Requests\CreateUserRequest;
 
 class UserController extends Controller
 {
-    //
+
+    protected $rolAdmin = 1;
     public function index()
     {
         $company_id = $this->getSessionCompanyId();
         $users = User::get();
-        if ( intval(auth()->user()->rol_id) )
-        {
-            return redirect()->route('login');
+        $rolAdmin = 1;
+        if ( intval(auth()->user()->rol_id) != $this->rolAdmin ){
         }
         return view('Catalogs.Users.list', compact('users', 'company_id'));
     }
     public function create()
     {
-        if ( intval(auth()->user()->rol_id) )
+        if ( intval(auth()->user()->rol_id) != $this->rolAdmin )
         {
             return redirect()->route('login');
         }
@@ -41,6 +41,11 @@ class UserController extends Controller
         try {
 
             $company_id = $this->getSessionCompanyId();
+
+            if( isset($request->company_id) ){
+                $company_id = $request->company_id;
+            }
+
             $user = User::create([
                 'name' => $request->name,
                 'email' => $request->email,
@@ -53,7 +58,7 @@ class UserController extends Controller
                 'postal_code' => $request->postal_code,
                 'img_path' => null,
                 'rol_id' => $request->rol_id,
-                'company_id' => $company_id
+                'company_id' => intval($company_id)
             ]);
 
             return response()->json([ 'user' => $user, 'message' => 'success', 'type' => 'success' ]);
@@ -63,7 +68,7 @@ class UserController extends Controller
     }
     public function edit(User $user)
     {
-        if ( intval(auth()->user()->rol_id) )
+        if ( intval(auth()->user()->rol_id) != $this->rolAdmin )
         {
             return redirect()->route('login');
         }

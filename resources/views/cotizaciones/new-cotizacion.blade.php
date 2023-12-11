@@ -12,7 +12,6 @@
               <div class="bg-[white] rounded-b-md">
                <div class="p-9">
                 <div class="space-y-6 text-slate-700">
-                    {{-- <x-application-logo class="block h-9 w-auto fill-current text-gray-800 dark:text-gray-200" /> --}}
                     <div class="block h-9 w-auto fill-current text-gray-800 dark:text-gray-200" >
                         @if ( intval($company_id) == 1)
                             <img src="{{ asset('assets/onemfg_logo.png') }}" alt="Logo" class="w-16 h-16 rounded">
@@ -20,10 +19,13 @@
                             <img src="{{ asset('assets/prescition.png') }}" alt="Logo" class="w-18 h-16 rounded">
                         @endif
                     </div>
-                    {{-- {{ $ }} --}}
 
                  <p class="text-xl font-extrabold tracking-tight uppercase font-body">
-                 One Mfg Cotización # 1
+                @if ( intval($company_id) == 1 )
+                    One MFG Cotizacion
+                @else
+                   Prescision Manufacturing Cotizacion
+                @endif
                  </p>
                 </div>
                </div>
@@ -41,8 +43,6 @@
     <input type="hidden" value="{{ route('cotizaciones.pdf') }}" id="url_get_pdf">
     <input type="hidden" value="{{ route('cotizaciones.email') }}" id="url_get_client_email">
 
-
-    {{-- <script type="text/javascript" src="{{ asset('js/CotizacionesController.js') }}"></script> --}}
         <script type="text/javascript" src="{{ asset('js/CtrlCotizaciones.js') }}"></script>
 </x-app-layout>
 

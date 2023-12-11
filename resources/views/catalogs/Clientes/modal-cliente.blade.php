@@ -33,23 +33,23 @@
             </div>
             <div class="mb-4">
                 <label for="clave" class="block text-gray-800 font-semibold">Nombre</label>
-                <input type="text" name="nombre" id="nombre" class="w-full rounded border-gray-300 focus:border-blue-500 focus:ring-blue-500" required>
+                <input type="text" name="nombre" id="nombre" maxlength="80"  class="w-full rounded border-gray-300 focus:border-blue-500 focus:ring-blue-500" required>
             </div>
             <div class="mb-4">
                 <label for="descripcion" class="block text-gray-800 font-semibold">Correo</label>
-                <input type="text" name="correo" id="correo" class="w-full rounded border-gray-300 focus:border-blue-500 focus:ring-blue-500" required>
+                <input type="text" name="correo" maxlength="40"  id="correo" class="w-full rounded border-gray-300 focus:border-blue-500 focus:ring-blue-500" required>
             </div>
             <div class="mb-4">
-                <label for "descripcion" class="block text-gray-800 font-semibold">Direccion</label>
-                <input type="text" name="direccion" id="direccion" class="w-full rounded border-gray-300 focus:border-blue-500 focus:ring-blue-500" required>
+                <label for "direccion" class="block text-gray-800 font-semibold">Direccion</label>
+                <input type="text" maxlength="300"  name="direccion" id="direccion" class="w-full rounded border-gray-300 focus:border-blue-500 focus:ring-blue-500" required>
             </div>
             <div class="mb-2">
-                <label for="descripcion" class="block text-gray-800 font-semibold">Codigo Postal</label>
-                <input type="text" name="codigo_postal" id="codigo_postal" class="w-full rounded border-gray-300 focus:border-blue-500 focus:ring-blue-500" required>
+                <label for="codigo_postal" class="block text-gray-800 font-semibold">Codigo Postal</label>
+                <input type="number" maxlength="8" name="codigo_postal" id="codigo_postal" class="w-full rounded border-gray-300 focus:border-blue-500 focus:ring-blue-500" required>
             </div>
             <div class="mb-4">
                 <label for="telefono" class="block text-gray-800 font-semibold">Telefono</label>
-                <input type="number" name="telefono" id="telefono" class="w-full rounded border-gray-300 focus:border-blue-500 focus:ring-blue-500" required>
+                <input type="number" maxlength="40" name="telefono" id="telefono" class="w-full rounded border-gray-300 focus:border-blue-500 focus:ring-blue-500" required>
             </div>
             @php
             $user = auth()->user();

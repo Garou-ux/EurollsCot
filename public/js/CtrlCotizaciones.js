@@ -43,6 +43,8 @@ const getClientesEmails = async( cliente_id ) => {
 
 const loadGrid = async () => {
     let products = await getProducts();
+    console.log('primero');
+    console.log(products);
     // products.unshift({ id: "0", clave: "" });
     $("#jsGridReporteServicio").jsGrid({
         width: "100%",
@@ -56,25 +58,36 @@ const loadGrid = async () => {
         controller:{
             loadData: function(filter) {
             },
-            insertItem: function(item){
-                if(  item.cantidad  !== undefined ){
-                    productos.push({
-                        cotizacion_id : 0,
-                        id:0,
-                        producto_id: Number(item.producto_id),
-                        cantidad: item.cantidad,
-                        precio: parseFloat(item.precio),
-                        importe: item.importe,
-                        comentario: item.comentarios
-                    });
-                    actualizarTotal(productos);
-                }
+            // insertItem: function(item){
+            //     if(  item.cantidad  !== undefined ){
+            //         productos.push({
+            //             cotizacion_id : 0,
+            //             id:0,
+            //             producto_id: Number(item.producto_id),
+            //             cantidad: item.cantidad,
+            //             precio: parseFloat(item.precio),
+            //             importe: item.importe,
+            //             comentario: item.comentarios
+            //         });
+            //         actualizarTotal(productos);
+            //     }
 
+            // },
+            updateItem: function(item){
+                console.log('updateItem');
+                console.log(item);
+                console.log(productos);
+                let cantidadGrid = item.cantidad * parseFloat(item.precio);
+                item.importe = cantidadGrid;
+                productos[args.itemIndex] = args.item;
+                actualizarTotal(productos);
             },
-            updateItem: function(item){},
             deleteItem: function(item){
                 let productIndex = $.inArray(item, productos);
                 productos.splice(productIndex, 1);
+                console.log('deleteItem');
+                console.log(item);
+                console.log(productos);
                 actualizarTotal(productos);
             },
         },
@@ -83,6 +96,9 @@ const loadGrid = async () => {
                     let cantidadGrid = args.item.cantidad * parseFloat(args.item.precio);
                     args.item.importe = cantidadGrid;
                     productos[args.itemIndex] = args.item;
+                    console.log('onItemUpdating');
+                    console.log(args);
+                    console.log(productos);
                     actualizarTotal(productos);
                 }
             },
@@ -90,7 +106,19 @@ const loadGrid = async () => {
                 if( args.item.cantidad > 0 ){
                     let cantidadGrid = args.item.cantidad *  parseFloat(args.item.precio);
                     args.item.importe = cantidadGrid;
-                    productos[args.itemIndex] = args.item;
+                    // productos[args.itemIndex] = args.item;
+                    console.log('onItemInserting');
+                    console.log(args);
+                    productos.push({
+                        cotizacion_id : 0,
+                        id:0,
+                        producto_id: Number( args.item.producto_id),
+                        cantidad:  args.item.cantidad,
+                        precio: parseFloat( args.item.precio),
+                        importe:  args.item.importe,
+                        comentario:  args.item.comentarios
+                    });
+                    console.log(productos);
                     actualizarTotal(productos);
                 }
             },
@@ -99,6 +127,9 @@ const loadGrid = async () => {
                     let cantidadGrid = args.item.cantidad * parseFloat(args.item.precio);
                     args.item.importe = cantidadGrid;
                     productos[args.itemIndex] = args.item;
+                    console.log('onItemUpdated');
+                    console.log(args);
+                    console.log(productos);
                     actualizarTotal(productos);
                 }
             },
@@ -107,6 +138,9 @@ const loadGrid = async () => {
                     let cantidadGrid = args.item.cantidad * parseFloat(args.item.precio);
                     args.item.importe = cantidadGrid;
                     productos[args.itemIndex] = args.item;
+                    console.log('onItemEditing');
+                    console.log(args);
+                    console.log(productos);
                     actualizarTotal(productos);
                 }
             },
@@ -320,16 +354,11 @@ document.addEventListener('DOMContentLoaded', async function() {
 
               // Crea un nuevo label para el input
               label = document.createElement("label");
-            //   label.textContent = "Correos de Cliente";
-              label.className = "text-xs text-gray-500"; // Estilo de letra pequeña
+              label.className = "text-xs text-gray-500";
 
               // Crea un nuevo elemento select
               nuevoSelect = document.createElement("select");
               nuevoSelect.id = "nuevo_select";
-              // Agrega opciones al nuevo select
-
-            //   nuevoSelect.add(opcion1);
-            //   nuevoSelect.add(opcion2);
             emails.forEach(option => {
                 const newOption = new Option(option.correo, option.id);
                 newOption.dataset.id = option.id;
@@ -339,11 +368,8 @@ document.addEventListener('DOMContentLoaded', async function() {
                 nuevoSelect.add(newOption);
             });
 
-              // Inserta los nuevos elementos debajo del 'codigo_postal'
               codigoPostal.insertAdjacentElement("afterend", nuevoInput);
-            //   nuevoInput.insertAdjacentElement("afterend", label); // Inserta el label debajo del input
               nuevoInput.insertAdjacentElement("afterend", nuevoSelect);
-            //   nuevoInput.addEventListener('input', searchClient(emails));
               nuevoInput.addEventListener('input', () => {
                 searchClient(emails);
               });
@@ -395,9 +421,7 @@ async function guardarDatos() {
     let valorAGuardar = ''; let is_input = false;
 
     // Verifica si el valor del input es un correo electrónico válido
-    // Verifica si el valor del input es un correo electrónico válido
     if (isValidEmail(nuevoInput.value)) {
-        // Muestra una alerta para confirmar el guardado
         const result = await Swal.fire({
           title: '¿Desea guardar el correo del cliente?',
           text: nuevoInput.value,
@@ -414,10 +438,8 @@ async function guardarDatos() {
           is_input = true;
         }
       } else {
-        // Si no es un correo válido, verifica si se ha seleccionado una opción en el select
         if (nuevoSelect.options.selectedIndex !== -1) {
           valorAGuardar = nuevoSelect.options[nuevoSelect.selectedIndex].text;
-          // Realiza el proceso de guardado aquí
           console.log('Valor a guardar:', valorAGuardar);
         }
       }
@@ -476,9 +498,9 @@ async function guardarDatos() {
     }
     appControl.cerrarLoading();
     Swal.fire('', response.message, response.type);
-    if( response.type != 'error' && response.type != undefined ){
-        location.reload();
-    }
+    // if( response.type != 'error' && response.type != undefined ){
+    //     location.reload();
+    // }
         // Hacer una solicitud AJAX para generar el PDF y mostrarlo
         getpdf(response.cotizacion_id);
 }

@@ -6,6 +6,7 @@ use App\Models\CotizacionDetail;
 use App\Models\Company;
 use App\Models\ClientesEmail;
 use App\Models\User;
+use App\Models\Producto;
 use Illuminate\Support\Facades\Validator;
 use App\Http\Requests\CotizacionRequest;
 use Illuminate\Support\Facades\Mail;
@@ -95,13 +96,15 @@ class CotizacionesController extends Controller
                 "atencion" => $request->atencion,
                 "terminos" => $request->terminos
             ]);
-              // Decodificar los detalles de la solicitud JSON
             $requestDetails = json_decode($request->details);
-            // dd($request->all(), $requestDetails);
-            // Validar los detalles
             foreach ($requestDetails as $detail) {
                 $validator = Validator::make((array) $detail, [
                     'producto_id' => 'required',
+                        function( $attribute, $value, $fail){
+                            if(!Producto::where('id', $value)->exists()){
+                                $fail('El producto seleccionado no existe');
+                            }
+                        },
                     'precio' => 'required|numeric|min:1',
                     'cantidad' => 'required|numeric|min:1',
                     'importe' => 'required|numeric|min:1',
