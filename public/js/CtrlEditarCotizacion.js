@@ -14,6 +14,7 @@ const subtotalElement = document.getElementById('subtotal');
 const ivaElement = document.getElementById('iva');
 const totalElement = document.getElementById('total');
 const url_get_client_email = document.getElementById('url_get_client_email').value;
+//
 
 let changeClient = false;
 let productos = [];
